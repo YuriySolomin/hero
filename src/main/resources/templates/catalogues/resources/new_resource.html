@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new Resource</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <h1>Resource Management System</h1>
+    <hr>
+    <h2>Save Resource</h2>
+    <form action="#" th:action="@{/saveResource}" th:object = "${resource}" method="POST">
+        <input type="text" th:field="*{name}" placeholder="Resource Name" class="form-control mb-4 col-4">
+        <div>
+            Resource type: 0 - можно найти любым способом, кроме добычи, 1 - добывается или дается в качестве награды,
+            2 - можно получить только лишь в качестве награды, 3 - только в боевых заданиях
+            4 - редкий, уникальный ресурс, 10 - создаваемый ресурс, который можно получить или сделать
+            <input type="text" th:field="*{rType}" placeholder="Resource type" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Resource type: 1 (минимум) - для ресурсов которые нужны с самого начала. Самый высокий процент на низких уровнях
+            <input type="text" th:field="*{sValue}" placeholder="Search value" class="form-control mb-4 col-4">
+        </div>
+
+        <button type="submit" class="btn btn-info col-2"> Save Resource</button>
+
+    </form>n
+
+</div>
+</body>
+</html>

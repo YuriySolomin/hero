@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new debt</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+    <h1> This is the sort list with default date, without deadline, virtual etc. This form will be updated step by step</h1>
+
+    <form action="#" th:action="@{/saveDebt}" th:object = "${debt}" method="POST">
+        <div>
+            Debt description:
+            <input type="text" th:field="*{description}" placeholder="Debt Name" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Stage:
+            <select class="form-control" th:field="*{stage}">
+                <option value="0">Not started</option>
+                <option value="1">In progress</option>
+                <option value="2">Done</option>
+                <option value="3">Reward</option>
+                <option value="4">Cancelled</option>
+                <option value="5">Failed</option>
+            </select>
+        </div>
+
+        <div>
+            Start date (Not formatted yet):
+            <!-- <input type="text" th:field="${#temporals.format(startDate 'dd-MM-yyyy')}" placeholder="Start date" class="form-control mb-4 col-4"> -->
+             <input type="date" th:value="*{startDate}" th:field="*{startDate}" placeholder="Start date" class="form-control mb-4 col-4">
+        </div>
+
+        <button type="submit" class="btn btn-info col-2"> Save Debt</button>
+    </form>
+</body>
+</html>

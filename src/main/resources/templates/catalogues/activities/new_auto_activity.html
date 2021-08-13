@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Add auto activity</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+</head>
+
+<body>
+
+    <h1>Auto Activity Management System</h1>
+    <hr>
+    <h2>Save Auto Activity</h2>
+
+    <form action="#" th:action="@{/saveAutoActivity}" th:object = "${autoActivity}" method="POST">
+
+        <div>
+            <select class="form-control" th:field="*{player.id_player}">
+                <option value="0">Select player</option>
+                <option th:each="player : ${players}" th:value="${player.id_player}" th:text="${player.nickName}"></option>
+            </select>
+        </div>
+        <div>
+            <select class="form-control" th:field="*{activity.id}">
+                <option value="0">Select activity</option>
+                <option th:each="activity : ${activities}" th:value="${activity.id}" th:text="${activity.name}"></option>
+            </select>
+        </div>
+        <div>
+            Init value:
+            <input type="text" th:field="*{initValue}" placeholder="Init value" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            First element of the progression:
+            <input type="text" th:field="*{firstElement}" placeholder="A1" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Ratio:
+            <input type="text" th:field="*{ratio}" placeholder="Ratio" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Start date:
+            <input type="date" th:value="${startDate}" id="startDate" name="startDate" placeholder="Start date" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            End date:
+            <input type="date" th:value="${endDate}" id="endDate" name="endDate" placeholder="End date" class="form-control mb-4 col-4">
+        </div>
+
+        <button type="submit" class="btn btn-info col-2"> Save Activity</button>
+
+    </form>
+
+</body>
+</html>

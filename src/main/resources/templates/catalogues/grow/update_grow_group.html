@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Update grow groups (Add player) </title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container">
+    <h2> List of added players </h2>
+
+    <!-- <form action="#" th:action="@{/addPlayerToGroup}" th:object = "${group}" method="POST">
+        <input type="hidden" th:field="*{idGroup}">
+        <div>
+            <select class="form-control" th:field="*{playerToGroup.player.id_player}">
+                <option value="0">Select player</option>
+                <option th:each="player : ${playerToGroup.player}" th:value="${player.id_player}" th:text="${player.nickName}"></option>
+            </select>
+        </div>
+        <div>
+            Description:
+            <input type="text" th:field="*{description}" placeholder="Player First Name" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            isHero:
+            <input type="text" th:field="*{isHero}" placeholder="Player First Name" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Height:
+            <input type="text" th:field="*{height}" placeholder="Player First Name" class="form-control mb-4 col-4">
+        </div>
+        <button type="submit" class="btn btn-info col-2"> Update PGG </button>
+
+    </form>
+
+-->
+    <form action="#" th:action="@{/uploadAAPlayers}" th:object = "${aaPlayer}" method="POST">
+        <button type="submit" class="btn btn-info col-2"> Save All Players</button>
+    </form>
+
+    <table border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th> Nick Name </th>
+            <th> Secret Name </th>
+            <th> is Hero ?</th>
+            <th> Height </th>
+            <th> is Active </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="player_group : ${listOfPlayerGroups}">
+            <td th:text="${player_group.player.nickName}">
+            <td th:text="${player_group.player.secretName}">
+            <td th:text="${player_group.isHero}">
+            <td th:text="${player_group.height}">
+            <td th:style=''  th:text="${player_group.activeStatus}">
+
+            </td>
+
+        </tr>
+        </tbody>
+
+    </table>
+    <a th:href="@{/}"> Back to Grow Groups Page</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Resources mining</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container my-2">
+    <h1> Mines List </h1>
+
+    <a th:href = "@{/showNewLongResourceActivityForm}" class="btn btn-primary btn-sm mb-3"> Add mine</a>
+    <table border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>Activity</th>
+            <th>Resource</th>
+            <th>Level</th>
+            <th>Qty in the hour</th>
+            <th>Start date</th>
+            <th>Storage date</th>
+            <th>On storage</th>
+            <th>Actions</th>
+            <th>Id Player</th>
+            <th>Id Resource</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="long_resource_activity : ${listOfLongResourceActivities}">
+            <td th:text="${long_resource_activity.activity.name}"></td>
+            <td th:text="${long_resource_activity.resource.name}"></td>
+            <td th:text="${long_resource_activity.actLevel}"></td>
+            <td th:text="${long_resource_activity.quantity}"></td>
+            <td th:text="${long_resource_activity.startDate}"></td>
+            <td th:text="${long_resource_activity.storageDate}"></td>
+            <td th:text="${long_resource_activity.onStorage}"></td>
+            <td th:text="${long_resource_activity.idPlayer}"></td>
+            <td th:text="${long_resource_activity.idResource}"></td>
+            <td>
+                <a th:href="@{/showFormForUpdateLongResourceActivity/{id}(id=${long_resource_activity.id})}" class="btn btn-primary">Update</a>
+                <form action="#" th:action="@{/showFormForUpdatePlayersResource/player/{idPlayer}/resource/{idResource}
+                (idPlayer=long_resource_activity.idPlayer, idResource=long_resource_activity.idResource)}" th:object = "${playerResource}" method="POST">
+                    <button type="submit" class="btn btn-info col-2"> Save All Players</button>
+                </form>
+                <a th:href="@{/showFormForUpdatePlayersResource/player/{idPlayer}/resource/{idResource}
+                (idPlayer=${long_resource_activity.idPlayer}, idResource=${long_resource_activity.idResource})}" class="btn btn-primary">Transfer</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+  <title>Activity game summary results</title>
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container">
+  <h2> Sorted players list </h2>
+
+  <form action="#" th:action="@{/summaryFilter}" th:object = "${growGroup}" method="POST">
+    <input type="hidden" th:field="*{idGroup}">
+    <div>
+      Activity filter:
+      <input type="text" id="idActivity" name="idActivity">
+    </div>
+    <div>
+      Player filter:
+      <input type="text" id="idPlayer" name="idPlayer">
+    </div>
+    <button type="submit" class="btn btn-info col-2"> Save All Players</button>
+  </form>
+
+  <br>
+  <div th:text="${tempInfo}">
+  <br>
+
+  <table border="1" class="table table-striped table-responsive-md">
+    <thead>
+    <tr>
+      <th> Nick Name </th>
+      <th> Activity Name </th>
+      <th> Value </th>
+      <th> Bonus </th>
+      <th> Random </th>
+      <th> Tempo </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="game_activity_statistic : ${gameActivityStatistics}">
+      <td th:text="${game_activity_statistic.nickName}">
+      <td th:text="${game_activity_statistic.activityName}"></td>
+      <td th:text="${game_activity_statistic.value}"></td>
+      <td th:text="${game_activity_statistic.bonusValue}"></td>
+      <td th:text="${game_activity_statistic.randomValue}"></td>
+
+
+    </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
+
+</body>
+</html>

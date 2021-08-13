@@ -1,0 +1,53 @@
+logging:
+  level:
+    org.springframework: ERROR
+    com.mkyong: DEBUG
+
+spring:
+  profiles:
+    active: dev
+  datasource:
+    url: 'jdbc:mysql://127.0.0.1:3306/training_camp'
+    driver-class-name: 'org.mariadb.jdbc.Driver'
+    username: 'root'
+    password: 'bfubhfwww123'
+  jpa:
+    hibernate.dialect: 'org.hibernate.di'
+    hibernate.naming.physical-strategy: 'org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl'
+
+  main:
+    banner-mode: off
+
+game-config:
+  game: 'activities'
+  testValues: 'I read it!'
+  resourcePlayers: 'src/main/resources/storage/crowd_players.txt'
+  resourcePlayersActivities: 'src/main/resources/storage/auto_activities_crowd.txt'
+  defaultValues:
+    activities:
+      a12: 25
+      a13: 1
+      a14: 2
+      a15: 11
+      a16: 1
+      a17: 11
+      a18: 40
+      a19: 4
+      a20: 40
+      a21: 42
+      a22: 45
+      a23: 50
+      a24: 50
+      a25: 75
+
+
+
+
+
+thread-pool: 10
+
+demo:
+  environment: prod
+  hosts:
+    - https://www.e1.com
+    - https://www.e2.com

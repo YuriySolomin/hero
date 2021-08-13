@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>The list of Player's properties</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+<h1> Players Properties List </h1>
+
+<table border="1" class="table table-striped table-responsive-md">
+    <thead>
+    <tr>
+        <th>
+            <a th:href="@{'/players_properties/page/' + ${currentPage} + '?sortField=player.nickName&sortDir=' + ${reverseSortDir}}">
+                Players Name
+            </a>
+        </th>
+        <th>
+            <a th:href="@{'/players_properties/page/' + ${currentPage} + '?sortField=property.name&sortDir=' + ${reverseSortDir}}">
+                Resources Name
+            </a>
+        </th>
+        <th>
+            <a th:href="@{'/players_properties/page/' + ${currentPage} + '?sortField=value&sortDir=' + ${reverseSortDir}}">
+                Quantity
+            </a>
+        </th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="player_property : ${listOfPlayersProperties}">
+        <td th:text="${player_property.player.nickName}"></td>
+        <td th:text="${player_property.property.name}"></td>
+        <td th:text="${player_property.value}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:if = "${totalPages > 1}">
+    <div class = "row col-sm-10">
+        <div class = "col-sm-2">
+            Total Rows: [[${totalItems}]]
+        </div>
+        <div class = "col-sm-1">
+                <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+                    <a th:if="${currentPage != i}" th:href="@{'/players_properties/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+                    <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp; &nbsp;
+                </span>
+        </div>
+        <div class = "col-sm-1">
+            <a th:if="${currentPage < totalPages}" th:href="@{'players_properties/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+            <span th:unless="${currentPage < totalPages}">Next</span>
+        </div>
+        <div class = "col-sm-1">
+            <a th:if="${currentPage < totalPages}" th:href="@{'players_properties/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
+            <span th:unless="${currentPage < totalPages}">Last</span>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

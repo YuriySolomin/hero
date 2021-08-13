@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Activity game </title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container">
+    <h2> List of added players </h2>
+    <form action="#" th:action="@{/runCalculation}" th:object = "${growGroup}" method="POST">
+        <input type="hidden" th:field="*{idGroup}">
+        <div>
+            Actual Date:
+            <input type="date" th:value="${defaultDate}" id="actualDate" name="actualDate" placeholder="actualDate" class="form-control mb-4 col-4">
+        </div>
+        <button type="submit" class="btn btn-info col-2"> Save All Players</button>
+    </form>
+
+    <form action="#" th:action="@{/runCalculationRealPlayer}" th:object = "${growGroup}" method="POST">
+        <input type="hidden" th:field="*{idGroup}">
+        <input type="hidden" th:field="*{startDate}">
+        <div>
+            Actual Date:
+            <input type="date" th:value="${defaultDate}" id="actualRealDate" name="actualRealDate" placeholder="actualDate" class="form-control mb-4 col-4">
+        </div>
+        <button type="submit" class="btn btn-info col-2"> Save Real Player</button>
+    </form>
+
+    <form action="#" th:action="@{/runCompare}" th:object = "${growGroup}" method="POST">
+        <input type="hidden" th:field="*{idGroup}">
+        <input type="hidden" th:field="*{startDate}">
+        <div>
+            Compare Date:
+            <input type="date" th:value="${defaultDate}" id="compareDate" name="compareDate" placeholder="compareDate" class="form-control mb-4 col-4">
+        </div>
+        <button type="submit" class="btn btn-info col-2"> Compare growth </button>
+    </form>
+
+    <form action="#" th:action="@{/UpdateRandomAndBonusesEveryDay}" th:object = "${growGroup}" method="POST">
+        <input type="hidden" th:field="*{idGroup}">
+        <input type="hidden" th:field="*{startDate}">
+        <div>
+            Compare Date:
+            <input type="date" th:value="${defaultDate}" id="bonusDate" name="bonusDate" placeholder="compareDate" class="form-control mb-4 col-4">
+        </div>
+        <button type="submit" class="btn btn-info col-2"> Update random and bonuses </button>
+    </form>
+
+    <form action="#" th:action="@{/runAll}" th:object = "${growGroup}" method="POST">
+        <input type="hidden" th:field="*{idGroup}">
+        <input type="hidden" th:field="*{startDate}">
+        <div>
+            Compare Date:
+            <input type="date" th:value="${defaultDate}" id="runAllDate" name="runAllDate" placeholder="compareDate" class="form-control mb-4 col-4">
+        </div>
+        <button type="submit" class="btn btn-info col-2"> Run ALL! </button>
+    </form>
+
+    <form action="#" th:action="@{/runActivityAdvise}" th:object = "${growGroup}" method="POST">
+        <input type="hidden" th:field="*{idGroup}">
+        <input type="hidden" th:field="*{startDate}">
+        <div>
+            Compare Date:
+            <input type="date" th:value="${defaultDate}" id="compareDate2" name="compareDate2" placeholder="compareDate" class="form-control mb-4 col-4">
+        </div>
+        <button type="submit" class="btn btn-info col-2"> Compare growth </button>
+    </form>
+
+    <table border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th> Nick Name </th>
+            <th> is Hero ?</th>
+            <th> List of activities </th>
+            <th> Action 1</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="player_group : ${listOfPlayerGroups}">
+            <td th:text="${player_group.player.nickName}">
+            <td th:text="${player_group.isHero}"></td>
+            <td> Under construction</td>
+            <td>
+                <!-- <form action = "#" th:action="@{/runCalculationForPlayer}" th:object = "${player}" method="post">
+                    <input type="hidden" th:field="*{id_player}">
+                    <div>
+                        Actual Date:
+                        <input type="date" th:value="${defaultDate}" id="currentDate" name="currentDate" placeholder="currentDate" class="form-control mb-4 col-4">
+                    </div>
+                </form>
+                -->
+            </td>
+
+        </tr>
+        </tbody>
+
+    </table>
+    <a th:href="@{/}"> Back to Grow Groups Page</a>
+
+</div>
+
+</body>
+</html>

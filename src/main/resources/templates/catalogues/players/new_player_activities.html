@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Players Activities </title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+
+<h1>Auto Activity Management System</h1>
+<hr>
+<h2>Save Auto Activity</h2>
+
+<form action="#" th:action="@{/savePlayerActivity}" th:object = "${playerActivity}" method="POST">
+
+    <div>
+        <select class="form-control" th:field="*{player.id_player}">
+            <!-- <option value="0">Select player</option> -->
+            <option th:each="player : ${players}" th:value="${player.id_player}" th:text="${player.nickName}"
+                    th:selected="${playerS} != null  AND ${player.id_player} == ${playerS}"></option>
+            <!-- th:if="${player.id_player} == ${playerS.id_player}" selected="selected" -->
+
+        </select>
+    </div>
+    <div>
+        <select class="form-control" th:field="*{activity.id}">
+            <!-- <option value="0">Select activity</option> -->
+            <option th:each="activity : ${activities}" th:value="${activity.id}" th:text="${activity.name}"
+                    th:selected="${activityS} != null  AND ${activity.id} == ${activityS}"></option>
+     <!-- th:if="${activity.id} == ${activityS.id}" selected="selected" -->
+
+        </select>
+    </div>
+    <div>
+        Quantity:
+        <input type="text" th:field="*{quantity}" placeholder="Quantity" class="form-control mb-4 col-4">
+    </div>
+    <div>
+        Activity date:
+        <input type="date" th:value="${defaultDate}" id="startDate" name="startDate" placeholder="Start date" class="form-control mb-4 col-4">
+    </div>
+<button type="submit" class="btn btn-info col-2"> Save Activity</button>
+
+</form>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Activity name</th>
+        <th>Qty</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="activities : ${listPlayerActivitiesForToday}">
+        <td th:text="${activities.activityName}"></td>
+        <td th:text="${activities.quantity}"></td>
+    </tr>
+    </tbody>
+
+</table>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Activity name</th>
+        <th>Qty</th>
+    </tr>
+    </thead>
+    <tbody>
+    <div> This is the players statistics with hardcoded start date </div>
+    <br>
+    <tr th:each="activities : ${listPlayerActivitiesForCurrentGroup}">
+        <td th:text="${activities.activityName}"></td>
+        <td th:text="${activities.quantity}"></td>
+    </tr>
+    </tbody>
+
+</table>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Activity name</th>
+        <th>Qty</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="activities : ${listPlayerActivitiesForWeek}">
+        <td th:text="${activities.activityName}"></td>
+        <td th:text="${activities.quantity}"></td>
+    </tr>
+    </tbody>
+
+</table>
+
+<form action="#" th:action="@{/showPAForPeriod}" th:object = "${playerActivity}" method="POST">
+    <div>
+        Activity date:
+        <input type="date" th:value="${defaultDate}" id="startFilterDate" name="startFilterDate" placeholder="Start date" class="form-control mb-4 col-4">
+    </div>
+    <button type="submit" class="btn btn-info col-2"> Activities for period</button>
+</form>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Activity name</th>
+        <th>Qty</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="activities : ${listPlayerActivitiesForPeriod}">
+        <td th:text="${activities.activityName}"></td>
+        <td th:text="${activities.quantity}"></td>
+    </tr>
+    </tbody>
+
+</table>
+
+</body>
+</html>

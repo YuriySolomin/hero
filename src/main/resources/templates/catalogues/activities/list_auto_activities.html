@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>The card of auto activities</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+    <h1>Auto activities setup</h1>
+
+    <a th:href = "@{/showNewAutoActivityForm}" class="btn btn-primary btn-sm mb-3"> Add Auto Activity</a>
+
+    <form action="#" th:action="@{/listOfFilteredAutoActivities}" th:object = "${quest}" method="GET">
+        <input type="text" id="autoActivityId" name="autoActivityId">
+        <button type="submit" class="btn btn-info col-2"> Go</button>
+    </form>
+
+    <table border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>
+                <a th:href="@{'/activities/page/' + ${currentPage} + '?sortField=player.nickName&sortDir=' + ${reverseSortDir}}">
+                    Player
+                </a>
+            </th>
+            <th>
+                <a th:href="@{'/activities/page/' + ${currentPage} + '?sortField=activity.name&sortDir=' + ${reverseSortDir}}">
+                    Activity
+                </a>
+            </th>
+            <th> Start Date </th>
+            <th> First element </th>
+            <th> Ratio </th>
+            <th> Bonus </th>
+            <th> Random </th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="auto_activity : ${listOfAutoActivities}">
+            <td th:text="${auto_activity.player.nickName}"></td>
+            <td th:text="${auto_activity.activity.name}"></td>
+            <td th:text="${auto_activity.startDate}"></td>
+            <td th:text="${auto_activity.firstElement}"></td>
+            <td th:text="${auto_activity.ratio}"></td>
+            <td th:text="${auto_activity.bonus}"></td>
+            <td th:text="${auto_activity.randomBonus}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

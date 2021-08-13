@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>All Players Resources Combinations</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+    <h1> Players Resources List </h1>
+
+    <a th:href = "@{/showNewPlayerResourceForm}" class="btn btn-primary btn-sm mb-3"> Add Resource</a>
+
+    <table border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>
+                <a th:href="@{'/players_resources/page/' + ${currentPage} + '?sortField=player.nickName&sortDir=' + ${reverseSortDir}}">
+                    Players Name
+                </a>
+            </th>
+            <th>
+                <a th:href="@{'/players_resources/page/' + ${currentPage} + '?sortField=resource.name&sortDir=' + ${reverseSortDir}}">
+                    Resources Name
+                </a>
+            </th>
+            <th>
+                <a th:href="@{'/players_resources/page/' + ${currentPage} + '?sortField=quantity&sortDir=' + ${reverseSortDir}}">
+                    Quantity
+                </a>
+            </th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="player_resource : ${listOfPlayersResources}">
+            <td th:text="${player_resource.player.nickName}"></td>
+            <td th:text="${player_resource.resource.name}"></td>
+            <td th:text="${player_resource.quantity}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

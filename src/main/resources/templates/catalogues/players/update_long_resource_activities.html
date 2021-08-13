@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Long resource activities</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container">
+    <h1>Resource activity Management System</h1>
+    <hr>
+    <h2>Save on the storage</h2>
+    <form action="#" th:action="@{/updateOnStorageLRA}" th:object = "${longResourceActivities}" method="POST">
+        <input type="text" th:field="*{id}">
+        <input type="text" th:field="*{idPlayer}">
+        <input type="text" th:field="*{idActivity}">
+        <input type="text" th:field="*{idResource}">
+        <input type="text" th:field="*{actLevel}">
+        <input type="text" th:field="*{isActive}">
+        <input type="text" th:field="*{quantity}">
+        <input type="text" th:field="*{onStorage}">
+
+        <div>
+            Start date:
+            <input type="datetime-local" th:value="*{startDate}" id="startDate" name="startDate" placeholder="Start date" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Storage date:
+            <input type="datetime-local" th:value="*{storageDate}" id="storageDate" name="storageDate" placeholder="Storage date" class="form-control mb-4 col-4">
+        </div>
+
+        <div>
+            <input type="datetime-local" th:value="*{endDate}" id="endDate" name="endDate" placeholder="End date" class="form-control mb-4 col-4">
+        </div>
+        <button type="submit" class="btn btn-info col-2"> Update Player</button>
+    </form>
+
+</div>
+<div>
+    <form action="#" th:action="@{/updatePRFromStorage}" th:object = "${longResourceActivities}" method="POST">
+        <input type="hidden" th:field="*{idPlayer}">
+        <input type="hidden" th:field="*{idResource}">
+        <input type="hidden" th:field="*{onStorage}">
+        <input type="hidden" th:field="*{id}">
+        <input type="hidden" th:field="*{idActivity}">
+        <input type="hidden" th:field="*{actLevel}">
+        <input type="hidden" th:field="*{isActive}">
+        <input type="hidden" th:field="*{quantity}">
+        <input type="hidden" th:field="*{startDate}">
+        <input type="hidden" th:field="*{storageDate}">
+        <input type="hidden" th:field="*{endDate}">
+
+        <button type="submit" class="btn btn-info col-2"> Update PR </button>
+    </form>
+</div>
+</body>
+</html>

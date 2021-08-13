@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List Quests</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+    <h1> Quests List </h1>
+
+    <a th:href = "@{/showNewQuestForm}" class="btn btn-primary btn-sm mb-3"> Add Quest</a>
+    <br>
+    <form action="#" th:action="@{/listOfQuests}" th:object = "${quest}" method="GET">
+        <input type="text" id="stage" name="stage">
+        <div>
+            Deadline filter:
+            <input type="date" th:value="${defaultDate}" id="deadlineFilterDate" name="deadlineFilterDate" placeholder="Start date" class="form-control mb-4 col-4">
+        </div>
+        <button type="submit" class="btn btn-info col-2"> Go</button>
+    </form>
+
+    <table border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>
+                <a th:href="@{'/quests/page/' + ${currentPage} + '?sortField=name&sortDir=' + ${reverseSortDir}}">
+                    Quest Name
+                </a>
+            </th>
+            <th>
+                <a th:href="@{'/quests/page/' + ${currentPage} + '?sortField=startDate&sortDir=' + ${reverseSortDir}}">
+                    Start date
+                </a>
+            </th>
+            <th>
+                <a th:href="@{'/quests/page/' + ${currentPage} + '?sortField=deadline&sortDir=' + ${reverseSortDir}}">
+                    Deadline
+                </a>
+            </th>
+            <th>
+                <a th:href="@{'/quests/page/' + ${currentPage} + '?sortField=endDate&sortDir=' + ${reverseSortDir}}">
+                    End date
+                </a>
+            </th>
+
+            <th> Stage </th>
+            <th> Quest type </th>
+            <th> Action </th>
+            <th> Description </th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="quest : ${listQuests}">
+            <td th:text="${quest.name}"></td>
+            <td th:text="${quest.startDate}"></td>
+            <td>
+                <div th:text="${quest.deadline}">></div>
+            </td>
+            <td th:text="${quest.endDate}"></td>
+            <td>
+                <div th:switch="${quest.stage}">
+                    <p th:case="0"> Not started</p>
+                    <p th:case="1"> In Progress</p>
+                    <p th:case="2"> Done</p>
+                    <p th:case="3"> Reward</p>
+                    <p th:case="4"> Cancelled</p>
+                    <p th:case="5"> Failed</p>
+                </div>
+            </td>
+            <td>
+                <div th:switch="${quest.questType}">
+                    <p th:case="0"> General</p>
+                    <p th:case="1"> Self education</p>
+                    <p th:case="2"> EPAM</p>
+                    <p th:case="3"> English</p>
+                    <p th:case="4"> Sport</p>
+                    <p th:case="5"> Creation</p>
+                    <p th:case="6"> Game</p>
+                    <p th:case="7"> Routine</p>
+                </div>
+            </td>
+            <td th:text="${quest.description}"></td>
+            <td>
+                <a th:href="@{/showFormForQuestUpdate/{id}(id=${quest.idQuest})}" class="btn btn-primary">Update</a>
+            </td>
+
+        </tr>
+
+
+        </tbody>
+    </table>
+
+    <div th:if = "${totalPages > 1}">
+        <div class = "row col-sm-10">
+            <div class = "col-sm-2">
+                Total Rows: [[${totalItems}]]
+            </div>
+            <div class = "col-sm-1">
+                <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+                    <a th:if="${currentPage != i}" th:href="@{'/quests/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+                    <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp; &nbsp;
+                </span>
+            </div>
+            <div class = "col-sm-1">
+                <a th:if="${currentPage < totalPages}" th:href="@{'quests/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+                <span th:unless="${currentPage < totalPages}">Next</span>
+            </div>
+            <div class = "col-sm-1">
+                <a th:if="${currentPage < totalPages}" th:href="@{'quests/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
+                <span th:unless="${currentPage < totalPages}">Last</span>
+            </div>
+        </div>
+
+    </div>
+
+<table border="1" align="center">
+    <thead>
+    <tr>
+        <th> Stage</th>
+        <th> StageName</th>
+        <th> quantity</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="questStatistic : ${statisticByAllQuestsGroupedByStage}">
+        <td th:text="${questStatistic.stage}"></td>
+        <td th:switch="${questStatistic.stage}">
+            <p th:case="0"> Not started</p>
+            <p th:case="1"> In Progress</p>
+            <p th:case="2"> Done</p>
+            <p th:case="3"> Reward</p>
+            <p th:case="4"> Cancelled</p>
+            <p th:case="5"> Failed</p>
+        </td>
+
+        <td th:text="${questStatistic.quantity}"></td>
+
+    </tr>
+    </tbody>
+</table>
+    <table border="1" align="center">
+        <thead>
+        <tr>
+            <th> QuestType</th>
+            <th> QuestTypeName</th>
+            <th> quantity</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="questStatistic : ${statisticByAllQuestsGroupedByType}">
+            <td th:text="${questStatistic.questType}"></td>
+            <td th:switch="${questStatistic.questType}">
+                <p th:case="0"> General</p>
+                <p th:case="1"> Self education</p>
+                <p th:case="2"> EPAM</p>
+                <p th:case="3"> English</p>
+                <p th:case="4"> Sport</p>
+                <p th:case="5"> Creation</p>
+                <p th:case="6"> Game</p>
+                <p th:case="7"> Routine</p>
+            </td>
+
+            <td th:text="${questStatistic.quantity}"></td>
+
+        </tr>
+        </tbody>
+    </table>
+
+
+
+</body>
+</html>

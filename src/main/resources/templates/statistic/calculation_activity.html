@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+</head>
+<body>
+    <h1> Check activity </h1>
+    <form action="#" th:action="@{/calculateActivity}" th:object = "${player}" method="POST">
+        <input type="hidden" th:field="${idPlayer}">
+        <div>
+            Actual Date:
+            <input type="date" th:value="${actualDate}" id="actualDate" name="actualDate" placeholder="Actual date" class="form-control mb-4 col-4">
+        </div>
+        <!-- <div>
+            <select class="form-control" th:field="*{activity.id}">
+                <option th:each="activity : ${activitiesAreInAuto}" th:value="${activity.id}" th:text="${activity.name}"
+                        th:selected="${activityS} != null  AND ${activity.id} == ${activityS}"></option>
+            </select>
+        </div>
+        -->
+        <button type="submit" class="btn btn-info col-2"> Calc Activity</button>
+    </form>
+
+
+</body>
+</html>

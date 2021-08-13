@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Grouped players activities</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+    <h1>Auto activities setup</h1>
+
+    <table border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>Player</th>
+            <th>Activity</th>
+            <th>Quantity</th>
+            <th>Add new </th>
+            <th>Add here </th>
+        </tr>c
+        </thead>
+        <tbody>
+        <tr th:each="player_activity : ${listOfPlayerActivitiesGroupedByAll}">
+            <td th:text="${player_activity.playerNickName}"></td>
+            <td th:text="${player_activity.activityName}"></td>
+            <td th:text="${player_activity.quantity}"></td>
+            <td>
+                <a th:href="@{/showNewPlayerActivityForm2/player/{playerId}/activity/{activityId}
+                (playerId=${player_activity.idPlayer}, activityId=${player_activity.idActivity})}" class="btn btn-primary">Add
+                </a>
+            </td>
+            <td>
+                <div type="hidden" th:field="${player_activity.idPlayer}"></div>
+                <div type="hidden" th:field="${player_activity.idActivity}"></div>
+                <div type="text" th:field="${player_activity.quantity}"></div>
+
+
+                <!--
+                <form action="#" th:action="@{/addQuickActivity}" th:object = "${player_activity}" method="POST">
+                    <input type="hidden" th:field="*{player_activity.idPlayer}">
+                    <input type="hidden" th:field="*{player_activity.idActivity}">
+                    <input type="text" th:field="*{player_activity.quantity}">
+                    <button type="submit" class="btn btn-info col-2"> Add qty</button>
+                </form>
+                -->
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

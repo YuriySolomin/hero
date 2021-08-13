@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Add property </title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container">
+    <h1>Property Management System</h1>
+    <hr>
+    <h2>Save Property</h2>
+
+    <form action="#" th:action="@{/saveProperty}" th:object = "${property}" method="POST">
+        <div>
+            Property name:
+            <input type="text" th:field="*{name}" placeholder="Property Name" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Description:
+            <input type="text" th:field="*{description}" placeholder="Description" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Property type:
+            <input type="text" th:field="*{prType}" placeholder="Property Type" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Property ratio:
+            <input type="text" th:field="*{ratio}" placeholder="Property Ratio" class="form-control mb-4 col-4">
+        </div>
+        <button type="submit" class="btn btn-info col-2"> Save Property</button>
+    </form>
+
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Add activity</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container">
+    <h1>Activity Management System</h1>
+    <hr>
+    <h2>Save Activity</h2>
+
+    <form action="#" th:action="@{/saveActivity}" th:object = "${activity}" method="POST">
+        <div>
+            Activity name:
+            <input type="text" th:field="*{name}" placeholder="Activity Name" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Activity type: (1 - physical, 2 - english, greater than 2 under constraction)
+            <input type="text" th:field="*{activityType}" placeholder="Type" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Description:
+            <input type="text" th:field="*{description}" placeholder="Description" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Activity filter: (0 - real, 1 - virtual)
+            <input type="text" th:field="*{activityFilter}" placeholder="Filter 0-real, 1-virtual" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Text for virtual activities
+            <input type="text" th:field="*{virtualText}" placeholder="Type" class="form-control mb-4 col-4">
+        </div>
+
+
+
+
+
+        <button type="submit" class="btn btn-info col-2"> Save Activity</button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

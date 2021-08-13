@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Auto activities for group</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+</head>
+<body>
+<h1>There are a lot of information</h1>
+
+<form action="#" th:action="@{/listOfGroupedAndFilteredAutoActivities}" th:object = "${quest}" method="GET">
+    <div>
+        Activity:&nbsp;
+        <input type="text" id="idActivity" name="idActivity">
+    </div>
+    <div>
+        Player:&nbsp;
+        <input type="text" id="idPlayer" name="idPlayer">
+    </div>
+    <div>
+        Start date:
+        <input type="date" th:value="${defaultDate}" id="startFilterdate" name="startFilterDate" placeholder="Start date" class="form-control mb-4 col-4">
+    </div>
+    <div>
+        End date:
+        <input type="date" th:value="${defaultDate}" id="endFilterDate" name="endFilterDate" placeholder="End date" class="form-control mb-4 col-4">
+    </div>
+
+    <button type="submit" class="btn btn-info col-2"> Go</button>
+</form>
+
+<form action="#" th:action="@{/getRecommendationForPlace}" th:object = "${quest}" method="GET">
+    <div>
+        Place:&nbsp;<input type="text" id="place" name="place">
+    </div>
+    <div>
+        Days:&nbsp;<input type="text" id="days" name="days">
+    </div>
+    <button type="submit" class="btn btn-info col-2"> GetRecommendations</button>
+
+</form>
+
+
+
+<table border="1" class="table table-striped table-responsive-md">
+    <thead>
+    <tr>
+        <th> Nick </th>
+        <th> Activity </th>
+        <th> First Element </th>
+        <th> Ratio </th>
+        <th> Random </th>
+        <th> Bonus </th>
+        <th> Days Factor </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="place_recommendation : ${listRecommendations}">
+        <td th:text="${place_recommendation.nickName}"></td>
+        <td th:text="${place_recommendation.activityName}"></td>
+        <td th:text="${place_recommendation.firstElement}"></td>
+        <td th:text="${place_recommendation.ratio}"></td>
+        <td th:text="${place_recommendation.randomValue}"></td>
+        <td th:text="${place_recommendation.bonusValue}"></td>
+        <td th:text="${place_recommendation.daysFactor}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<table border="1" class="table table-striped table-responsive-md">
+    <thead>
+    <tr>
+        <th>
+            <a th:href="@{'/activities/page/' + ${currentPage} + '?sortField=nickName&sortDir=' + ${reverseSortDir}}">
+                Player
+            </a>
+        </th>
+        <th>
+            <a th:href="@{'/activities/page/' + ${currentPage} + '?sortField=activityName&sortDir=' + ${reverseSortDir}}">
+                Activity
+            </a>
+        </th>
+        <th> Start Date </th>
+        <th> First element </th>
+        <th> Ratio </th>
+        <th> Bonus </th>
+        <th> Random </th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="auto_activity_group : ${listOfGroupedAutoActivities}">
+        <td th:text="${auto_activity_group.nickName}"></td>
+        <td th:text="${auto_activity_group.activityName}"></td>
+        <td th:text="${auto_activity_group.saveDate}"></td>
+        <td th:text="${auto_activity_group.firstElement}"></td>
+        <td th:text="${auto_activity_group.ratio}"></td>
+        <td th:text="${auto_activity_group.bonusValue}"></td>
+        <td th:text="${auto_activity_group.randomValue}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+|NickNameMask|FLNamesMask|G|T|Count|AddGroupNum|
+|VeryLowGirl|Feed|0|30|5|4|
+|LowGirl|Feed_2|0|30|5|4|
+|MediumGirl|Slave_1|0|30|30|4|
+|HighGirl|Slave_2|0|30|50|4|
+|VeryHighGirl|Compet_1|0|30|10|4|
+|SuperGirl|Compet_2|0|30|10|4|
+|RandomGirlA|Feed|0|30|15|4|
+|RandomGirlB|Feed|0|30|15|4|

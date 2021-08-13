@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>The list of debts</title>
+    <link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+
+</head>
+<body>
+    <h1> Quests List </h1>
+
+    <a th:href = "@{/showNewDebtForm}" class="btn btn-primary btn-sm mb-3"> Add Debt</a>
+
+    <table border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>
+                <a th:href="@{'/debts/page/' + ${currentPage} + '?sortField=description&sortDir=' + ${reverseSortDir}}">
+                    Description of debt
+                </a>
+            </th>
+            <th>
+                <a th:href="@{'/debts/page/' + ${currentPage} + '?sortField=startDate&sortDir=' + ${reverseSortDir}}">
+                    Start date
+                </a>
+            </th>
+            <th>
+                <a th:href="@{'/debts/page/' + ${currentPage} + '?sortField=stage&sortDir=' + ${reverseSortDir}}">
+                    Status
+                </a>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="debt : ${listDebts}">
+            <td th:text="${debt.description}"></td>
+            <td th:text="${debt.startDate}"></td>
+            <td th:text="${debt.stage}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

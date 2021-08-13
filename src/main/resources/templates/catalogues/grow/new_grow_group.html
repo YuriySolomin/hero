@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new grow group</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+    <div class="container">
+        <h1> Grow group</h1>
+        <form action="#" th:action="@{/saveGrowGroup}" th:object = "${growGroup}" method="POST">
+            <div>
+                Name:
+                <input type="text" th:field="*{name}" placeholder="Group name" class="form-control mb-4 col-4">
+            </div>
+            <div>
+                Start date:
+                <input type="date"  th:value="${defaultDate}" id="startDate" name="startDate" placeholder="Start date" class="form-control mb-4 col-4">
+            </div>
+            <div>
+                Group type:
+                <input type="text" th:field="*{groupType}" placeholder="Group name" class="form-control mb-4 col-4">
+            </div>
+            <div>
+                Levels count:
+                <input type="text" th:field="*{levelsCount}" placeholder="Levels count" class="form-control mb-4 col-4">
+            </div>
+            <div>
+                Max height:
+                <input type="text" th:field="*{maxHeight}" placeholder="Max height" class="form-control mb-4 col-4">
+            </div>
+            <div>
+                End date:
+                <input type="date"  th:value="${endlessDate}" id="endDate" name="endDate" placeholder="Date date" class="form-control mb-4 col-4">
+            </div>
+
+            <button type="submit" class="btn btn-info col-2"> Save GG</button>
+        </form>
+
+    </div>
+
+</body>
+</html>

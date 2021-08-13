@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>The lis of grow froups</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+</head>
+<body>
+    <h1> Grow groups List </h1>
+    <a th:href = "@{/showNewGrowGroupsForm}" class="btn btn-primary btn-sm mb-3"> Add Grow G</a>
+    <table border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>
+                <a th:href="@{'/page/' + ${currentPage} + '?sortField=nickName&sortDir=' + ${reverseSortDir}}">
+                    Name
+                </a>
+            </th>
+            <th>
+                <a th:href="@{'/page/' + ${currentPage} + '?sortField=lastName&sortDir=' + ${reverseSortDir}}">
+                    Start Date
+                </a>
+            </th>
+            <th> Levels Count </th>
+            <th> Max height </th>
+            <th> Add Players </th>
+        </tr>
+
+        </thead>
+        <tbody>
+        <tr th:each="growGroup : ${listGrowGroups}">
+            <td th:text="${growGroup.name}"></td>
+            <td th:text="${growGroup.startDate}"></td>
+            <td th:text="${growGroup.levelsCount}"></td>
+            <td th:text="${growGroup.maxHeight}"></td>
+            <td>
+                <a th:href="@{/showUpdateGGForm/{id_group}(id_group=${growGroup.idGroup})}" class="btn btn-primary">Update</a>
+                <a th:href="@{/showActivityGameForm/{id_group}(id_group=${growGroup.idGroup})}" class="btn btn-primary">Activity Game</a>
+                <a th:href="@{/showActivitySomeResults/{id_group}(id_group=${growGroup.idGroup})}" class="btn btn-primary">Some results</a>
+                <a th:href="@{/listWithAutoActivitiesInfo/{id_group}(id_group=${growGroup.idGroup})}" class="btn btn-primary">Auto activity info</a>
+                <a th:href="@{/showHeroResults/{id_group}(id_group=${growGroup.idGroup})}" class="btn btn-primary">Hero results</a>
+                <a th:href="@{/showSummaryResult/{id_group}(id_group=${growGroup.idGroup})}" class="btn btn-primary">Summary 1</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if = "${totalPages > 1}">
+        <div class = "row col-sm-10">
+            <div class = "col-sm-2">
+                Total Rows: [[${totalItems}]]
+            </div>
+            <div class = "col-sm-1">
+                <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+                    <a th:if="${currentPage != i}" th:href="@{'/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+                    <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp; &nbsp;
+                </span>
+            </div>
+            <div class = "col-sm-1">
+                <a th:if="${currentPage < totalPages}" th:href="@{'page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+                <span th:unless="${currentPage < totalPages}">Next</span>
+            </div>
+            <div class = "col-sm-1">
+                <a th:if="${currentPage < totalPages}" th:href="@{'page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
+                <span th:unless="${currentPage < totalPages}">Last</span>
+            </div>
+        </div>
+
+    </div>
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>All Players Activities</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+</head>
+<body>
+    <h1>Auto activities setup</h1>
+
+    <a th:href = "@{/showNewPlayerActivityForm}" class="btn btn-primary btn-sm mb-3"> Add Player Activity</a>
+    <a th:href = "@{/players_activity/grouped/idPlayer={id}(id=1)}" class="btn btn-primary btn-sm mb-3"> View grouped for 1 player</a>
+    <table border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>
+                <a th:href="@{'/players_activities/page/' + ${currentPage} + '?sortField=player.nickName&sortDir=' + ${reverseSortDir}}">
+                    Player
+                </a>
+            </th>
+            <th>
+                <a th:href="@{'/players_activities/page/' + ${currentPage} + '?sortField=activity.name&sortDir=' + ${reverseSortDir}}">
+                    Activity
+                </a>
+            </th>
+            <th> Quantity </th>
+            <th> Start Date </th>
+            <th> Is Active? </th>
+            <th> Activity type </th>
+            <th> Duration </th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="player_activity : ${listOfPlayerActivities}">
+            <td th:text="${player_activity.player.nickName}"></td>
+            <td th:text="${player_activity.activity.name}"></td>
+            <td th:text="${player_activity.quantity}"></td>
+            <td th:text="${player_activity.startDate}"></td>
+            <td th:text="${player_activity.active}"></td>
+            <td th:text="${player_activity.actType}"></td>
+            <td th:text="${player_activity.duration}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+
+</body>
+</html>

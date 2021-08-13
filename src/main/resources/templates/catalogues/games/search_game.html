@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Start search</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+<h1>Select location and time and start a new search</h1>
+<hr>
+
+<form action="#" th:action="@{/startSearch}" th:object = "${player}" method="POST">
+    <div>
+        <select class="form-control" th:field="*{player.id_player}">
+            <!-- <option value="0">Select player</option> -->
+            <option th:each="player : ${players}" th:value="${player.id_player}" th:text="${player.nickName}"
+                    th:selected="${playerS} != null  AND ${player.id_player} == ${playerS}"></option>
+            <!-- th:if="${player.id_player} == ${playerS.id_player}" selected="selected" -->
+
+        </select>
+    </div>
+    <div>
+        <select class="form-control" th:field="*{activity.id}">
+            <!-- <option value="0">Select activity</option> -->
+            <option th:each="activity : ${possibleActivities}" th:value="${activity.id}" th:text="${activity.name}"
+                    th:selected="${activityS} != null  AND ${activity.id} == ${activityS}"></option>
+            <!-- th:if="${activity.id} == ${activityS.id}" selected="selected" -->
+
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-info col-2"> Save Activity</button>
+
+</form>
+<br>
+<h2> What is happened now </h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Activity name</th>
+        <th>Qty</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="activities : ${allUsedActivities}">
+
+        <td th:text="${activities.idActivity}"></td>
+        <td th:text="${activities.startDuration}"></td>
+        <td> <a th:href="@{/calcSearchResult/{id}(id=${activities.id})}" class="btn btn-primary">Update</a>
+        </td>
+    </tr>
+    </tbody>
+
+</table>
+
+</body>
+
+</html>

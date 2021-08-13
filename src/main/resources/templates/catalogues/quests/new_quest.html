@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>New quest</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container">
+    <h1>Player Management System</h1>
+    <hr>
+    <h2>Save Player</h2>
+
+    <form action="#" th:action="@{/saveQuest}" th:object = "${quest}" method="POST">
+        <!-- <div>
+            <select class="form-control" th:field="*{quest.idParent}">
+                <option value="0">Select parent quest</option>
+                <option th:each="quest : ${parent}" th:value="${quest.idQuest}" th:text="${quest.name}"></option>
+                 th:if="${player.id_player} == ${playerS.id_player}" selected="selected"
+            </select>
+
+        </div>
+-->
+        <div>
+            Quest name:
+            <input type="text" th:field="*{name}" placeholder="Quest name" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Start date:
+            <input type="date"  th:value="${defaultDate}" id="startDate" name="startDate" placeholder="Start date" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Deadline:
+            <input type="date" th:value="*{deadline}" th:field="*{deadline}" placeholder="Deadline" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            End date:
+            <input type="date" th:value="*{endDate}" th:field="*{endDate}" placeholder="End date" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Description:
+            <input type="text" multiple="multiple" th:field="*{description}" placeholder="Quest description" class="form-control mb-4 col-4">
+        </div>
+        <div>
+            Stage:
+            <select class="form-control" th:field="*{stage}">
+                <option value="0">Not started</option>
+                <option value="1">In progress</option>
+                <option value="2">Done</option>
+                <option value="3">Reward</option>
+                <option value="4">Cancelled</option>
+                <option value="5">Failed</option>
+            </select>
+        </div>
+        <div>
+            Quest type:
+            <select class="form-control" th:field="*{questType}">
+                <option value="0">General (not in the group)</option>
+                <option value="1">Self education (new information, articles, interesting issues)</option>
+                <option value="2">EPAM issues (all work tasks)</option>
+                <option value="3">English</option>
+                <option value="4">Sport</option>
+                <option value="5">Creation (all related to story writing)</option>
+                <option value="6">Game (new features, code clear, and scenarios, resources ideas)</option>
+                <option value="7">Routine (everywhere from PP payments to clear space)</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-info col-2"> Save Player</button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

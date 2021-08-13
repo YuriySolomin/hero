@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My super project!</title>
+    <link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container my-2">
+    <h1> Players List </h1>
+    <div>
+        The list of players
+        <a th:href = "@{/listOfPlayers}" class="btn btn-primary btn-sm mb-3"> Show Players </a>
+    </div>
+    <div>
+        The list of players
+        <a th:href = "@{/selectFirstMistress}" class="btn btn-primary btn-sm mb-3"> Show Mistress </a>
+    </div>
+
+    <hr>
+    <a th:href = "@{/listOfLongResourceActivities}" class="btn btn-primary btn-sm mb-3"> Show Grow groups </a>
+
+    <hr>
+    <a th:href = "@{/listOfGrowGroups}" class="btn btn-primary btn-sm mb-3"> Show Grow groups </a>
+    <hr>
+    <a th:href = "@{/listOfResources}" class="btn btn-primary btn-sm mb-3"> Show Resources </a>
+    <hr>
+    <a th:href = "@{/listOfProperties}" class="btn btn-primary btn-sm mb-3"> Show Properties </a>
+    <hr>
+    <a th:href = "@{/listOfActivities}" class="btn btn-primary btn-sm mb-3"> Show Activities </a>
+    <hr>
+    <a th:href = "@{/listOfAutoActivities}" class="btn btn-primary btn-sm mb-3"> Show Auto Activities </a>
+    <hr>
+    <a th:href = "@{/listOfQuests}" class="btn btn-primary btn-sm mb-3"> Show Quests </a>
+    <hr>
+    <a th:href = "@{/listOfPlayersResources}" class="btn btn-primary btn-sm mb-3"> Show PR </a>
+    <hr>
+    <a th:href = "@{/listOfPlayersProperties}" class="btn btn-primary btn-sm mb-3"> Show PProperty </a>
+    <hr>
+    <a th:href = "@{/listOfDebts}" class="btn btn-primary btn-sm mb-3"> Show debts </a>
+    <hr>
+    <a th:href = "@{/selectMistressShadow}" class="btn btn-primary btn-sm mb-3"> Show mistress </a>
+    <hr>
+    <a th:href = "@{/listOfCosts}" class="btn btn-primary btn-sm mb-3"> Show costs </a>
+
+    <form action="#" th:action="@{/uploadAAPlayers}" th:object = "${aaPlayer}" method="POST">
+        <button type="submit" class="btn btn-info col-2"> Save All Players</button>
+    </form>
+
+    <form action="#" th:action="@{/uploadCraudPlayers}" th:object = "${aaPlayer}" method="POST">
+        <button type="submit" class="btn btn-info col-2"> Crowd Players</button>
+    </form>
+
+    <form action="#" th:action="@{/uploadAACrowd}" th:object = "${aaPlayer}" method="POST">
+        <button type="submit" class="btn btn-info col-2"> Crowd activities</button>
+    </form>
+
+
+</div>
+<!-- header -
+<div>
+    <h1>Super app!<//h1>
+</div>
+
+<div>
+    <div>
+        <a href="/greeting">Check greeting page</a>
+        <a href="/result2">Check result page</a>
+        <button onclick="location.href='/list'">List users</button>
+        <button onclick="location.href='/add'">Add user</button>
+    </div>
+</div>
+-->
+</body>
+</html>

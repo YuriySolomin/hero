@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+    <h1> Statistic by activities </h1>
+    <h2> INFO: The height of hero is </h2>
+    <div>
+        <a th:href = "@{/recommendationActivityDebt/idPlayer/{id}(id=${idPlayer})}" class="btn btn-primary btn-sm mb-3"> Recommendation page</a>
+    </div>
+    <table  border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>Hero grow percent</th>
+            <th>Hero grow sm (aproxim)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${factor}"></td>
+            <td th:text="${1.7*factor}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <table border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>Player</th>
+            <th>Activity</th>
+            <th>Date</th>
+            <th>Result</th>
+            <th>Hero Result</th>
+            <th>Hero Percent</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="activityS : ${autoActivities}">
+            <td th:text="${activityS.player.nickName}"></td>
+            <td th:text="${activityS.autoActivity.activity.name}"></td>
+            <td th:text="${activityS.localDate}"></td>
+            <td th:text="${activityS.summary}"></td>
+            <td th:text="${activityS.quantity}"></td>
+            <td th:text="${activityS.quantity}/${activityS.summary}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+|NickNameMask|FLNamesMask|G|T|Count|AddGroupNum|
+|VeryLowBoy|Feed|1|30|50|4|
+|LowBoy|Feed_2|1|30|40|4|
+|MediumBoy|Slave_1|1|30|30|4|
+|HighBoy|Slave_2|1|30|20|4|
+|VeryHighBoy|Compet_1|1|30|10|4|
+|SuperBoy|Compet_2|1|30|5|4|
+|RandomBoyA|Feed|1|30|10|4|
+|RandomBoyB|Feed|1|30|5|4|

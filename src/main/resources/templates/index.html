@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My super project!</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+</head>
+<body>
+<div class="container my-2">
+    <h1> Welcome to the training camp! </h1>
+    <div>
+        <a th:href = "@{/listOfPlayerActivities}" class="btn btn-primary btn-sm mb-3"> Show Player Activities </a>
+    </div>
+    <div>
+        This is the list of entities:
+        <a th:href = "@{/entities}" class="btn btn-primary btn-sm mb-3"> Show game entities </a>
+    </div>
+    <div>
+        Search game:
+        <a th:href = "@{/startSearchGame}" class="btn btn-primary btn-sm mb-3"> Start search </a>
+    </div>
+
+</div>
+</body>
+</html>

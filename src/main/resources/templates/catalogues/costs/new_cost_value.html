@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new Cost's value</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container">
+    <h1>Cost Value Management System</h1>
+    <hr>
+    <h2>Save Cost Values</h2>
+    <form action="#" th:action="@{/saveCostValue}" th:object = "${costValue}" method="POST">
+        <div>
+            <select class="form-control" th:field="*{cost.idCost}">
+                <!-- <option value="0">Select player</option> -->
+                <option th:each="cost : ${costs}" th:value="${cost.idCost}" th:text="${cost.name}"
+                        th:selected="${costSelect} != null  AND ${cost.idCost} == ${costSelect}"></option>
+                <!-- th:if="${player.id_player} == ${playerS.id_player}" selected="selected" -->
+
+            </select>
+        </div>
+        <div>
+            <select class="form-control" th:field="*{resource.idResource}">
+                <!-- <option value="0">Select activity</option> -->
+                <option th:each="resource : ${resources}" th:value="${resource.idResource}" th:text="${resource.name}"
+                        th:selected="${resourceSelect} != null  AND ${resource.idResource} == ${resourceSelect}"></option>
+                <!-- th:if="${activity.id} == ${activityS.id}" selected="selected" -->
+
+            </select>
+        </div>
+        <div>
+            Quantity:
+            <input type="text" th:field="*{quantity}" placeholder="Quantity" class="form-control mb-4 col-4">
+        </div>
+        <button type="submit" class="btn btn-info col-2"> Save Cost Values</button>
+
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+  <title>Activity game results</title>
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container">
+
+  <form action="#" th:action="@{/placeRecommendation}" th:object = "${growGroup}" method="POST">
+    <input type="hidden" th:field="*{idGroup}">
+    <div>
+      Activity filter:
+      <input type="text" id="idActivity" name="idActivity">
+    </div>
+    <div>
+      Player filter:
+      <input type="text" id="idPlayer" name="idPlayer">
+    </div>
+    <div>
+      Period:
+      <input type="text" id="period" name="period">
+    </div>
+    <div>
+      Place:
+      <input type="text" id="place" name="place">
+    </div>
+
+    <button type="submit" class="btn btn-info col-2"> Get reccomendations</button>
+
+
+  </form>
+  <h2> Sorted players list </h2>
+
+
+  <table border="1" class="table table-striped table-responsive-md">
+    <thead>
+    <tr>
+      <th> ActivityName </th>
+      <th> Hero result  </th>
+      <th> Average </th>
+      <th> Factor </th>
+      <th> Place </th>
+      <th> Tempo </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="compare_player : ${compareList}">
+      <td th:text="${compare_player.activity.name}">
+      <td th:text="${compare_player.heroValue}"></td>
+      <td th:text="${compare_player.average}"></td>
+      <td th:text="${compare_player.factor}"></td>
+      <td th:text="${compare_player.place}"></td>
+      <td th:text="${compare_player.threeDaysRecommendation}"></td>
+
+
+    </tr>
+
+    </tbody>
+
+  </table>
+
+  <table>
+    <thead>
+    <tr>
+      <th> Activity </th>
+      <th> Period </th>
+      <th> New place </th>
+      <th> In day </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="default_recommendations : ${defaultRecommendationList}">
+      <td th:text="${default_recommendations.activityName}"></td>
+      <td th:text="${default_recommendations.period}"></td>
+      <td th:text="${default_recommendations.place}"></td>
+      <td th:text="${default_recommendations.recommendation}"></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <table>
+    <thead>
+    <tr>
+      <th> Activity </th>
+      <th> Period </th>
+      <th> New place </th>
+      <th> In day </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td th:text="${activityName}"></td>
+      <td th:text="${period}"></td>
+      <td th:text="${place}"></td>
+      <td th:text="${recommendation}"></td>
+    </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>
