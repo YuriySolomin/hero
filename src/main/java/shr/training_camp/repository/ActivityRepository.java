@@ -16,6 +16,9 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
     @Query(value = "select * from tc_activities where activity_filter = 0", nativeQuery = true)
     Page<Activity> findAllRealActivities(Pageable pageable);
 
+    @Query(value = "select * from tc_activities where activity_filter = :activityFilter", nativeQuery = true)
+    List<Activity> getActivitiesByActivityFilter(@Param("activityFilter") int activityFilter);
+
     @Query(value = "select * from tc_activities where activity_type = :activityType", nativeQuery = true)
     List<Activity> findActivitiesByType(@Param("activityType") Integer activityType);
 

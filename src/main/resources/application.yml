@@ -19,10 +19,10 @@ spring:
     banner-mode: off
 
 game-config:
-  game: 'activities'
   testValues: 'I read it!'
   resourcePlayers: 'src/main/resources/storage/crowd_players.txt'
   resourcePlayersActivities: 'src/main/resources/storage/auto_activities_crowd.txt'
+  resourceBotActivities: 'src/main/resources/storage/auto_activities_bots.txt'
   defaultValues:
     activities:
       a12: 25

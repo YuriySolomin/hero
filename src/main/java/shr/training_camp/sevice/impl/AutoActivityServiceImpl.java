@@ -45,6 +45,11 @@ public class AutoActivityServiceImpl extends AbstractEntityServiceImpl implement
     }
 
     @Override
+    public List<AutoActivity> getAllAutoActivitiesByPlayerId(Long playerId, Long groupId) {
+        return this.autoActivityRepository.findAllPlayerAutoActivities(playerId, groupId);
+    }
+
+    @Override
     public AutoActivity findAutoActivityForPlayer(Long playerId, Long activityId) {
         return this.autoActivityRepository.findAutoActivityForPlayer(playerId, activityId);
     }

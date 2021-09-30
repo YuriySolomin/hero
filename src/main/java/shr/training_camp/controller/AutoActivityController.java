@@ -123,7 +123,7 @@ public class AutoActivityController extends AbstractEntityController {
             , @RequestParam(value = "idGroup", required = false) Long idGroup, Model model) {
         Long groupId = Objects.isNull(idGroup) ? 4L : idGroup;
         PlayersGroups heroPlayer = playerGroupService.findPlayersGroupsByGroupId(groupId, 0).get(0);
-        List<AutoActivity> groupActivity = autoActivityService.getAllAutoActivitiesByPlayerId(heroPlayer.getIdPlayer());
+        List<AutoActivity> groupActivity = autoActivityService.getAllAutoActivitiesByPlayerId(heroPlayer.getIdPlayer(), idGroup);
         List<PlaceRecommendations> placeRecommendationsList = new ArrayList<>();
         for (AutoActivity autoActivity : groupActivity) {
             List<AutoActivitiesPlayerGroups> list = playerGroupService.findAutoActivitiesForPlayerGroups(groupId, autoActivity.getIdActivity());
@@ -173,7 +173,6 @@ public class AutoActivityController extends AbstractEntityController {
 
 
     }
-
 
     @PostMapping("/saveAutoActivity")
     public String savePlayer(@ModelAttribute("autoActivity") AutoActivity autoActivity ) {

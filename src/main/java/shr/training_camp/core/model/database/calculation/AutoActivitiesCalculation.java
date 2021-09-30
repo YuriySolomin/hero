@@ -2,11 +2,7 @@ package shr.training_camp.core.model.database.calculation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import shr.training_camp.core.model.database.Activity;
-import shr.training_camp.core.model.database.AutoActivity;
-import shr.training_camp.core.model.database.GameActivityLog;
-import shr.training_camp.core.model.database.GrowGroup;
-import shr.training_camp.core.model.database.PlayersGroups;
+import shr.training_camp.core.model.database.*;
 import shr.training_camp.core.model.database.addition.GameActivityStatistics;
 import shr.training_camp.core.model.database.addition.HeroActivityResult;
 import shr.training_camp.core.model.database.addition.PlayerActivityStatistics;
@@ -48,6 +44,9 @@ public class AutoActivitiesCalculation {
 
     @Autowired
     private IGameActivityLogService gameActivityLogService;
+
+    @Autowired
+    private IGroupActivitiesService groupActivitiesService;
 
     public AutoActivity getActivityValueForPlayer(final Long idPlayer, final Long idActivity, LocalDate actualDate) {
         AutoActivity autoActivity = autoActivityService.findAutoActivityForPlayer(idPlayer, idActivity);
@@ -101,7 +100,9 @@ public class AutoActivitiesCalculation {
     }
 
     public PlayerAutoActivityInfo getGameActivityLogForPlayer(Long idGroup, Long idPlayer, LocalDate actualDate) {
-        List<AutoActivity> playersAA = autoActivityService.getAllAutoActivitiesByPlayerId(idPlayer);
+        // ToDo переделать, взять активности из группы
+        List<AutoActivity> playersAA = autoActivityService.getAllAutoActivitiesByPlayerId(idPlayer, idGroup);
+        PlayersGroups playersGroups = playerGroupService.findByGroupAndPlayerId(idGroup, idPlayer);
         List<GameActivityLog> gameActivityLogList = new ArrayList<>();
         PlayerAutoActivityInfo playerAutoActivityInfo = new PlayerAutoActivityInfo();
         for (AutoActivity autoActivity : playersAA) {
@@ -129,6 +130,15 @@ public class AutoActivitiesCalculation {
                     }
                 }
                 resultValue += randomValue + bonusValue;
+                if (playersGroups.getIsHero() == 2) {
+                    int probability = RandomUtils.getRandom(100);
+                    if (probability % 10 == 0) {
+                        resultValue = 2 * resultValue;
+                    }
+                    if (probability == 77) {
+                        resultValue = 3 * resultValue;
+                    }
+                }
                 BigDecimal resultValueBD = new BigDecimal(Double.toString(resultValue));
                 resultValueBD = resultValueBD.setScale(4, RoundingMode.HALF_UP);
                 BigDecimal randomValueBD = new BigDecimal(Double.toString(randomValue));
@@ -190,7 +200,7 @@ public class AutoActivitiesCalculation {
             }
         }
         PlayersGroups heroPlayerGroups = playerGroupService.findPlayersGroupsByGroupId(idGroup, 1).get(0);
-        List<GameActivityStatistics> heroList = gameActivityLogService.getGameActivityStatistics(convertDate, heroPlayerGroups.getIdPlayer());
+        List<GameActivityStatistics> heroList = gameActivityLogService.getGameActivityStatistics(convertDate, heroPlayerGroups.getIdPlayer(), idGroup);
         Map<Long, Double> heroMap = new HashMap<>();
         for (GameActivityStatistics hero : heroList) {
             heroMap.put(hero.getIdActivity(), hero.getValue());
@@ -203,42 +213,53 @@ public class AutoActivitiesCalculation {
         return result2;
     }
 
-    public List<ComparePlayers> createComparePlayersList(Long idGroup, LocalDate convertDate) {
-        PlayersGroups heroPlayerGroups = playerGroupService.findPlayersGroupsByGroupId(idGroup, 1).get(0);
-        List<GameActivityStatistics> heroList = gameActivityLogService.getGameActivityStatistics(convertDate, heroPlayerGroups.getIdPlayer());
-        ComparePlayers heroPlayer = new ComparePlayers();
-        heroPlayer.setCurrentDate(convertDate);
-        heroPlayer.setHero(true);
-        heroPlayer.setIdPlayer(heroPlayerGroups.getIdPlayer());
-        heroPlayer.setPlayer(playerService.getPlayerById(heroPlayerGroups.getIdPlayer()));
-        heroPlayer.setGrowFactor(1D);
+    public ComparePlayers getPlayerResults(LocalDate convertDate, PlayersGroups playersGroups, boolean isHero) {
+        ComparePlayers comparePlayers = new ComparePlayers();
+        comparePlayers.setCurrentDate(convertDate);
+        comparePlayers.setHero(isHero);
+        comparePlayers.setIdPlayer(playersGroups.getIdPlayer());
+        comparePlayers.setPlayer(playerService.getPlayerById(playersGroups.getIdPlayer()));
+        //heroPlayer.setGrowFactor(1D); // ToDo change!
+        comparePlayers.setActiveStatus(playersGroups.getActiveStatus());
         Map<Long, Double> heroMap = new HashMap<>();
         Map<String, Double> heroMap2 = new HashMap<>();
+        List<GameActivityStatistics> heroList = gameActivityLogService.getGameActivityStatistics(convertDate, playersGroups.getIdPlayer(), playersGroups.getIdGroup());
         for (GameActivityStatistics hero : heroList) {
             heroMap.put(hero.getIdActivity(), hero.getValue());
             heroMap2.put(activityService.getActivityById(hero.getIdActivity()).getName(), hero.getValue());
         }
-        heroPlayer.setActivityValues(heroMap);
-        heroPlayer.setActivityValueNames(heroMap2);
+        comparePlayers.setActivityValues(heroMap);
+        comparePlayers.setActivityValueNames(heroMap2);
+        return comparePlayers;
+    }
+
+    public List<ComparePlayers> createComparePlayersList(Long idGroup, LocalDate convertDate) {
+        GrowGroup growGroup = growGroupService.getGrowGroupById(idGroup);
+        ComparePlayers heroPlayer = getPlayerResults(convertDate,
+                playerGroupService.findPlayersGroupsByGroupId(idGroup, 1).get(0),
+                true);
+        int type = growGroup.getGroupType();
+        ComparePlayers masterPlayer = (type == 0) ? heroPlayer : getPlayerResults(convertDate,
+                playerGroupService.findPlayersGroupsByGroupId(idGroup, 2).get(0), false);
+        // ToDo investigate why Match(type) checks all cases
+        /* ComparePlayers masterPlayer = Match(type).of(
+                Case($(0), heroPlayer),
+                Case($(1), getPlayerResults(convertDate,
+                        playerGroupService.findPlayersGroupsByGroupId(idGroup, 2).get(0),
+                        false)));
+         */
 
         List<PlayersGroups> playersGroupsList = playerGroupService.findPlayersGroupsByGroupId(idGroup, 0);
+        if (growGroup.getGroupType() == 1) {
+            playersGroupsList.addAll(playerGroupService.findPlayersGroupsByGroupId(idGroup, 1));
+        }
         List<ComparePlayers> resultCompareList = new ArrayList<>();
         for (PlayersGroups playersGroups : playersGroupsList) {
-            ComparePlayers virtualPlayer = new ComparePlayers();
-
-            Map<Long, Double> virtualMap = new HashMap<>();
-            Map<String, Double> virtualNameMap = new HashMap<>();
-            virtualPlayer.setHero(false);
-            virtualPlayer.setCurrentDate(convertDate);
-            virtualPlayer.setIdPlayer(playersGroups.getIdPlayer());
-            virtualPlayer.setPlayer(playerService.getPlayerById(playersGroups.getIdPlayer()));
-            virtualPlayer.setActiveStatus(playersGroups.getActiveStatus());
-            for (GameActivityStatistics virtualStatistic : gameActivityLogService.getGameActivityStatistics(convertDate, playersGroups.getIdPlayer())) {
-                virtualMap.put(virtualStatistic.getIdActivity(), virtualStatistic.getValue());
-                virtualNameMap.put(activityService.getActivityById(virtualStatistic.getIdActivity()).getName(), virtualStatistic.getValue());
+            ComparePlayers virtualPlayer = getPlayerResults(convertDate, playersGroups, false);
+            if (playersGroups.getIsHero() == 1) {
+                virtualPlayer.setHero(true);
             }
-            virtualPlayer.setActivityValues(virtualMap);
-            virtualPlayer.setActivityValueNames(virtualNameMap);
+
             resultCompareList.add(virtualPlayer);
         }
         for (ComparePlayers comparePlayer : resultCompareList) {
@@ -246,24 +267,43 @@ public class AutoActivitiesCalculation {
             Double factor2d = 1.000000;
             for (Map.Entry<Long, Double> compareMap : comparePlayer.getActivityValues().entrySet()) {
                 Double virtualValue = compareMap.getValue();
-                Double heroValue = heroPlayer.getActivityValues().get(compareMap.getKey());
-                compareFactor += virtualValue / heroValue;
-                Number factor2 = calcFactor2(virtualValue, heroValue);
+                Double masterValue = masterPlayer.getActivityValues().get(compareMap.getKey());
+                if (Objects.isNull(masterValue) || masterValue == 0) {
+                    masterValue = 1D;
+                }
+                compareFactor += virtualValue / masterValue;
+                Number factor2 = calcFactor2(virtualValue, masterValue);
                 factor2d *= factor2.doubleValue();
 
             }
-            Double average = compareFactor / 14.0;
+            Double average = compareFactor / masterPlayer.getActivityValues().size();
             BigDecimal averageBD = new BigDecimal(Double.toString(average));
             averageBD = averageBD.setScale(6, RoundingMode.HALF_UP);
             comparePlayer.setGrowFactor(averageBD.doubleValue());
             BigDecimal factor2BD = new BigDecimal(Double.toString(factor2d));
             factor2BD = factor2BD.setScale(6, RoundingMode.HALF_UP);
             comparePlayer.setGrowFactor2(factor2BD.doubleValue());
+            Map<String, Double> growFactors = new HashMap<>();
+            growFactors.put("grow_factor_1", averageBD.doubleValue());
+            growFactors.put("grow_factor_2", factor2BD.doubleValue());
+            comparePlayer.setGrowFactorsMap(growFactors);
+
 
         }
+        if (growGroup.getGroupType() == 1) {
+            // It means we add bot player. It's neessary to think about other groups
+            Map<String, Double> growFactors = new HashMap<>();
+            growFactors.put("grow_factor_1", 1D);
+            growFactors.put("grow_factor_2", 1D);
+            masterPlayer.setGrowFactorsMap(growFactors);
+            masterPlayer.setGrowFactor(1D);
+            masterPlayer.setGrowFactor2(1D);
+            resultCompareList.add(masterPlayer);
 
-        //resultCompareList.stream().filter(x -> x.getGrowFactor2() <=1).collect(Collectors.toList());
-        resultCompareList.add(heroPlayer);
+
+        } else {
+            resultCompareList.add(heroPlayer);
+        }
         return resultCompareList;
 
     }
@@ -290,11 +330,12 @@ public class AutoActivitiesCalculation {
         return result;
     }
 
-    public List<Recommendations> getFewRecommendations(List<ComparePlayers> allPlayers, LocalDate startDate, int place, int period) {
-        List<AutoActivity> autoActivities = autoActivityService.getAllAutoActivitiesByPlayerId(allPlayers.stream().filter(c -> !c.isHero()).findFirst().get().getIdPlayer());
+    public List<Recommendations> getFewRecommendations(Long idGroup, List<ComparePlayers> allPlayers, LocalDate startDate, int place, int period) {
+        //List<AutoActivity> autoActivities = autoActivityService.getAllAutoActivitiesByPlayerId(allPlayers.stream().filter(c -> !c.isHero()).findFirst().get().getIdPlayer());
+        List<GroupActivities> groupActivities = groupActivitiesService.getActivitiesInTheGroup(idGroup);
         List<Recommendations> result = new ArrayList<>();
         ComparePlayers heroPlayer = allPlayers.stream().filter(ComparePlayers::isHero).findFirst().get();
-        for (AutoActivity autoActivity : autoActivities) {
+        for (GroupActivities autoActivity : groupActivities) {
             List<ComparePlayers> aaPlayer = allPlayers.stream().filter(c -> !c.isHero())
                     .sorted(Comparator.comparingDouble((ToDoubleFunction<ComparePlayers>) c -> c.getActivityValues().get(autoActivity.getIdActivity())).reversed()).collect(Collectors.toList());
             ComparePlayers comparePlayer = aaPlayer.get(place-1);
@@ -315,7 +356,7 @@ public class AutoActivitiesCalculation {
 
     public List<Recommendations> getFewRecommendations(Long idGroup, LocalDate startDate, int place, int period) {
         List<ComparePlayers> allPlayers = createComparePlayersList(idGroup, startDate);
-        return getFewRecommendations(allPlayers, startDate, place, period);
+        return getFewRecommendations(idGroup, allPlayers, startDate, place, period);
     }
 
     public double getRecommendations(Long idGroup, LocalDate startDate, Long idActivity, int place, int period) {

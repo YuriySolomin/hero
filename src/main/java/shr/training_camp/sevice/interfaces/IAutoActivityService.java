@@ -14,6 +14,8 @@ public interface IAutoActivityService<T> extends AbstractEntityService<T> {
 
     List<AutoActivity> getAllAutoActivitiesByPlayerId(final Long playerId);
 
+    List<AutoActivity> getAllAutoActivitiesByPlayerId(final Long playerId, final Long groupId);
+
     AutoActivity findAutoActivityForPlayer(final Long playerId, final Long activityId);
 
     List<Activity> getActivitiesArePresentInTheAA(final Long playerId);

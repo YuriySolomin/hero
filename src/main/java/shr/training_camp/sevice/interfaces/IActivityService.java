@@ -12,4 +12,5 @@ public interface IActivityService<T> extends AbstractEntityService<T> {
     Page<Activity> findAllRealActivities(Pageable pageable);
     Activity getActivityById(Long id);
     List<Activity> findActivitiesByType(final Integer activityType);
+    List<Activity> getActivitiesByActivityFilter(int activityFilter);
 }

@@ -41,6 +41,7 @@ public class Upload {
     }
 
     public List<AutoActivityCrowdUpload> getAACrowdUpload() {
+
         List<String> fileInfo = FileUtils.readListFromFile(gameConfig.getResourcePlayersActivities());
         List<AutoActivityCrowdUpload> autoActivityCrowdUploads;
         autoActivityCrowdUploads = fileInfo.stream().skip(1).map(s -> s.split("\\|"))

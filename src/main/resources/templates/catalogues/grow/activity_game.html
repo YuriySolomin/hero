@@ -12,14 +12,6 @@
 <body>
 <div class="container">
     <h2> List of added players </h2>
-    <form action="#" th:action="@{/runCalculation}" th:object = "${growGroup}" method="POST">
-        <input type="hidden" th:field="*{idGroup}">
-        <div>
-            Actual Date:
-            <input type="date" th:value="${defaultDate}" id="actualDate" name="actualDate" placeholder="actualDate" class="form-control mb-4 col-4">
-        </div>
-        <button type="submit" class="btn btn-info col-2"> Save All Players</button>
-    </form>
 
     <form action="#" th:action="@{/runCalculationRealPlayer}" th:object = "${growGroup}" method="POST">
         <input type="hidden" th:field="*{idGroup}">
@@ -38,17 +30,11 @@
             Compare Date:
             <input type="date" th:value="${defaultDate}" id="compareDate" name="compareDate" placeholder="compareDate" class="form-control mb-4 col-4">
         </div>
-        <button type="submit" class="btn btn-info col-2"> Compare growth </button>
-    </form>
-
-    <form action="#" th:action="@{/UpdateRandomAndBonusesEveryDay}" th:object = "${growGroup}" method="POST">
-        <input type="hidden" th:field="*{idGroup}">
-        <input type="hidden" th:field="*{startDate}">
         <div>
-            Compare Date:
-            <input type="date" th:value="${defaultDate}" id="bonusDate" name="bonusDate" placeholder="compareDate" class="form-control mb-4 col-4">
+            Losers count:
+            <input type="text" id="losersCount" name="losersCount" placeholder="1">
         </div>
-        <button type="submit" class="btn btn-info col-2"> Update random and bonuses </button>
+        <button type="submit" class="btn btn-info col-2"> Compare growth </button>
     </form>
 
     <form action="#" th:action="@{/runAll}" th:object = "${growGroup}" method="POST">
@@ -61,14 +47,14 @@
         <button type="submit" class="btn btn-info col-2"> Run ALL! </button>
     </form>
 
-    <form action="#" th:action="@{/runActivityAdvise}" th:object = "${growGroup}" method="POST">
+    <form action="#" th:action="@{/runByProperties}" th:object = "${growGroup}" method="POST">
         <input type="hidden" th:field="*{idGroup}">
         <input type="hidden" th:field="*{startDate}">
         <div>
-            Compare Date:
-            <input type="date" th:value="${defaultDate}" id="compareDate2" name="compareDate2" placeholder="compareDate" class="form-control mb-4 col-4">
+            Run by properties Date:
+            <input type="date" th:value="${defaultDate}" id="runByPropertiesDate" name="runByPropertiesDate" placeholder="runByPropertiesDate" class="form-control mb-4 col-4">
         </div>
-        <button type="submit" class="btn btn-info col-2"> Compare growth </button>
+        <button type="submit" class="btn btn-info col-2"> Run ALL! </button>
     </form>
 
     <table border="1" class="table table-striped table-responsive-md">

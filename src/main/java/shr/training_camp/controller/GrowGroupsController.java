@@ -56,7 +56,8 @@ public class GrowGroupsController extends AbstractEntityController {
     @Autowired
     private IGameActivityEventsLogService gameActivityEventsLogService;
 
-    private static final int delayGrowFactor = 100;
+    @Autowired
+    private IGroupPropertiesService groupPropertiesService;
 
     @GetMapping("/listOfGrowGroups")
     public String showListOfTheQuests(Model model) {
@@ -125,6 +126,14 @@ public class GrowGroupsController extends AbstractEntityController {
         return "catalogues/grow/summary_results";
     }
 
+    @GetMapping("/setupRoundResults/{id}")
+    public String getSetupRoundResultsPage(@PathVariable(value = "id") long id,
+                                           Model model) {
+        GrowGroup group = growGroupService.getGrowGroupById(id);
+        model.addAttribute("growGroup", group);
+        return "catalogues/grow/group_properties_setup";
+    }
+
     @PostMapping("/summaryFilter")
     public String getSummaryFilter(@ModelAttribute("growGroup") GrowGroup group,
                                    @RequestParam(value = "idActivity", required = false) Long idActivity,
@@ -167,14 +176,15 @@ public class GrowGroupsController extends AbstractEntityController {
         LocalDate filterDate = LocalDate.now();
         List<HeroActivityPlaces> playersGroupsList = autoActivitiesCalculation.getHeroActivityPlaces(id, filterDate);
         List<ComparePlayers> allPlayers = autoActivitiesCalculation.createComparePlayersList(id, filterDate);
-        List<Recommendations> defaultRecommendations = autoActivitiesCalculation.getFewRecommendations(allPlayers, filterDate, 1, 100);
+        List<Recommendations> defaultRecommendations = autoActivitiesCalculation.getFewRecommendations(id, allPlayers, filterDate, 10, 15);
         for (HeroActivityPlaces heroActivityPlaces: playersGroupsList) {
             long deltaPlace = heroActivityPlaces.getPlace() / 10 ;
             if (deltaPlace < 1) {
+
                 deltaPlace = 1;
             }
             long newPlace = (heroActivityPlaces.getPlace() - deltaPlace) > 1 ? heroActivityPlaces.getPlace() - deltaPlace : 1;
-            double recommendationValues = autoActivitiesCalculation.getFewRecommendations(allPlayers, filterDate, (int)newPlace, 3)
+            double recommendationValues = autoActivitiesCalculation.getFewRecommendations(id, allPlayers, filterDate, (int)newPlace, 3)
                     .stream().filter(rec -> rec.getIdActivity().equals(heroActivityPlaces.getIdActivity())).findFirst().get().getRecommendation();
             heroActivityPlaces.setThreeDaysRecommendation(recommendationValues);
         }
@@ -215,11 +225,25 @@ public class GrowGroupsController extends AbstractEntityController {
         }
         model.addAttribute("growGroup", group);
         List<PlayersGroups> virtualPlayers = playerGroupService.findActivePlayersGroupsByGroupId(group.getIdGroup(), 0);
+        if (!playerGroupService.findActivePlayersGroupsByGroupId(group.getIdGroup(), 2).isEmpty()) {
+            virtualPlayers.add(playerGroupService.findActivePlayersGroupsByGroupId(group.getIdGroup(), 2).get(0));
+        }
         LocalDate startDate = virtualPlayers.get(0).getActualDate();
         long days = ChronoUnit.DAYS.between(startDate, runAllDate);
         for (int i = 0; i <= days; i++) {
             LocalDate currentDate = startDate.plusDays(i);
-            runRandomBeforeVirtualCalculation(group, currentDate); // Check if currentDate.minus(1L)
+            if (group.getIdGroup() == 4) {
+                runRandomBeforeVirtualCalculation(group, currentDate); // Check if currentDate.minus(1L)
+            } else
+            {
+                if (group.getIdGroup() == 5) {
+                    runRandomBeforeVirtualCalculationGroup5(group, currentDate);
+                } else {
+                    runRandomForGroupTwoPlayers(group, currentDate);
+                }
+
+            }
+
             for (PlayersGroups playersGroups : virtualPlayers) {
                 PlayerAutoActivityInfo xxx = autoActivitiesCalculation.getGameActivityLogForPlayer(playersGroups.getIdGroup(), playersGroups.getIdPlayer(), currentDate.plusDays(1L));
                 List<GameActivityLog> activityLogs = xxx.getGameActivityLogList();
@@ -240,34 +264,35 @@ public class GrowGroupsController extends AbstractEntityController {
         return "catalogues/grow/activity_game";
     }
 
-
-    @PostMapping("/runCalculation")
-    public String runCalculation(@ModelAttribute("growGroup") GrowGroup group,
-                                 @RequestParam(value = "actualDate", required = false) String actualDateString,
-                                 Model model) {
-        LocalDate actualDate = null;
-        if (Objects.nonNull(actualDateString) && !actualDateString.isEmpty()) {
-            actualDate = LocalDate.parse(actualDateString);
-        }
+    @PostMapping("/runByProperties")
+    public String runByProperties(@ModelAttribute("growGroup") GrowGroup group,
+                                  @RequestParam(value = "runByPropertiesDate") String runByPropertiesDateString,
+                                  Model model) {
+        // ToDo check max date in the tc_game_activity_log, if null set as group start date
+        // ToDo take all group_round_% properties between runByPropertiesDate and date from previous item
+        // ToDo runAll method with parameter runByPropertiesDate
+        // ToDo runRealPlayer with parameter runByPropertiesDate + 1 day
+        // ToDo create list with GroupProperties objects were recieved in the second item, sort it by dates
+        // ToDo change the methos compare grow, set the count of loosers according to parameter, by default = 1
+        // ToDo run for all items compareGrow
         model.addAttribute("growGroup", group);
-        runRandomBeforeVirtualCalculation(group, actualDate.minusDays(1L));
-        /*List<PlayersGroups> virtualPlayers = playerGroupService.findActivePlayersGroupsByGroupId(group.getIdGroup(), 0);
-        for (PlayersGroups playersGroups: virtualPlayers) {
-            PlayerAutoActivityInfo xxx = autoActivitiesCalculation.getGameActivityLogForPlayer(playersGroups.getIdGroup(), playersGroups.getIdPlayer(), actualDate);
-            List<GameActivityLog> activityLogs = xxx.getGameActivityLogList();
-            for (GameActivityLog gameActivityLog: activityLogs) {
-                AutoActivity autoActivity = autoActivityService.findAutoActivityForPlayer(playersGroups.getIdPlayer(), gameActivityLog.getIdActivity());
-                autoActivity.setDaysFactor(gameActivityLog.getDaysFactor());
-                autoActivity.setFirstElement(gameActivityLog.getFirstElement());
-                autoActivity.setSaveDate(gameActivityLog.getSaveDate().plusDays(1L));
-                playersGroups.setActualDate(actualDate);
-                //autoActivity.setSummary(gameActivityLog.getValue());
-                 autoActivityService.save(autoActivity);
-                gameActivityLogService.save(gameActivityLog);
-                playerGroupService.save(playersGroups);
+        LocalDate runByPropertiesDate = LocalDate.parse(runByPropertiesDateString);
+        LocalDate realPlayerDate = runByPropertiesDate.plusDays(1L);
+        LocalDate maxDate = Objects.nonNull(gameActivityLogService.getMaxDateGameActivityLogForGroup(group.getIdGroup())) ?
+                gameActivityLogService.getMaxDateGameActivityLogForGroup(group.getIdGroup()) :
+                group.getStartDate();
+        List<GroupProperties> groupPropertiesList = groupPropertiesService.getAllPropertiesFromDiapason("round_date%",
+                group.getIdGroup(), maxDate, runByPropertiesDate);
+        for (GroupProperties groupProperty: groupPropertiesList) {
+            runAll(group, groupProperty.getStartDate().toString(), model);
+            runCalculationRealPlayer(group, groupProperty.getStartDate().plusDays(1L).toString(), model);
+            runCompare(group, groupProperty.getStartDate().toString(), String.valueOf(groupProperty.getValue().intValue()), model);
+        }
 
-            }
-        }*/
+
+
+
+
         return "catalogues/grow/activity_game";
     }
 
@@ -296,37 +321,34 @@ public class GrowGroupsController extends AbstractEntityController {
         return "catalogues/grow/activity_game";
     }
 
-    @PostMapping("/runActivityAdvise")
-    public String runActivityAdvise(@ModelAttribute("growGroup") GrowGroup group,
-                             @RequestParam(value = "compareDate2", required = false) String compareDateString,
-                             Model model) {
-        LocalDate compareDate = null;
-        LocalDate newGrowFactrorStartDate = LocalDate.parse("2021-07-06"); // ToDo remove to config
-        if (Objects.nonNull(compareDateString) && !compareDateString.isEmpty()) {
-            compareDate = LocalDate.parse(compareDateString);
-        }
-        model.addAttribute("growGroup", group);
-        Map<Long, Double> adviseMap = autoActivitiesCalculation.createCompareActivitiesPlayersList(group.getIdGroup(), compareDate);
-
-        return "catalogues/grow/activity_game";
-    }
-
     @PostMapping("/runCompare")
     public String runCompare(@ModelAttribute("growGroup") GrowGroup group,
                              @RequestParam(value = "compareDate", required = false) String compareDateString,
+                             @RequestParam(value = "losersCount", required = false) String losersCount,
                              Model model) {
         LocalDate compareDate = null;
-        LocalDate newGrowFactrorStartDate = LocalDate.parse("2021-07-06"); // ToDo remove to config
+        LocalDate newGrowFactrorStartDate = groupPropertiesService.getPropertyByGroupIdAndCode("grow_factor_2", group.getIdGroup()).getStartDate();
+        LocalDate firstFactorDate = groupPropertiesService.getPropertyByGroupIdAndCode("grow_factor_1", group.getIdGroup()).getStartDate();
+        GrowGroup dbGroup = growGroupService.getGrowGroupById(group.getIdGroup());
+        int groupType = dbGroup.getGroupType();
+        double reduceFactor = 1.000;
         if (Objects.nonNull(compareDateString) && !compareDateString.isEmpty()) {
             compareDate = LocalDate.parse(compareDateString);
         }
         model.addAttribute("growGroup", group);
-        int days = (int) ChronoUnit.DAYS.between(group.getStartDate(), compareDate);
-        int days2 = (int) ChronoUnit.DAYS.between(newGrowFactrorStartDate, compareDate);
-        int lowPercent = Math.max(100 - days, 0);
-        int lowPercent2 = Math.max(200 - days2, 0);
-        List<ComparePlayers> comparePlayersList = autoActivitiesCalculation.createComparePlayersList(group.getIdGroup(), compareDate)
-                .stream().filter(c -> !c.isHero()).collect(Collectors.toList());
+        int days = Math.max((int) ChronoUnit.DAYS.between(firstFactorDate, compareDate), 0);
+        int days2 = Math.max((int) ChronoUnit.DAYS.between(newGrowFactrorStartDate, compareDate), 0);
+        int lowPercent = Math.max(groupPropertiesService.getPropertyByGroupIdAndCode("grow_factor_1", group.getIdGroup()).getValue().intValue() - days, 0);
+        int lowPercent2 = Math.max(groupPropertiesService.getPropertyByGroupIdAndCode("grow_factor_2", group.getIdGroup()).getValue().intValue() - days2, 0);
+        List<ComparePlayers> comparePlayersList;
+        if (groupType == 0) {
+            comparePlayersList = autoActivitiesCalculation.createComparePlayersList(group.getIdGroup(), compareDate)
+                    .stream().filter(c -> !c.isHero()).collect(Collectors.toList());
+        } else {
+            comparePlayersList = autoActivitiesCalculation.createComparePlayersList(group.getIdGroup(), compareDate);
+        }
+        // ToDo Add check if necessary to reduce
+        List <GameActivityGrowLog> roundActivityLog = new ArrayList<>();
         for (ComparePlayers comparePlayers : comparePlayersList) {
             Double baseGrow = playerGroupService.findByGroupAndPlayerId(group.getIdGroup(), comparePlayers.getIdPlayer()).getHeight();
             GameActivityGrowLog gameActivityGrowLog = new GameActivityGrowLog();
@@ -335,59 +357,118 @@ public class GrowGroupsController extends AbstractEntityController {
             gameActivityGrowLog.setIdPlayer(comparePlayers.getIdPlayer());
             gameActivityGrowLog.setFactor(comparePlayers.getGrowFactor());
             gameActivityGrowLog.setFactor2(comparePlayers.getGrowFactor2());
-            Double changeGrowFactor = comparePlayers.getGrowFactor();
+            //Double changeGrowFactor = comparePlayers.getGrowFactor();
+            Double changeGrowFactor = comparePlayers.getGrowFactorsMap().get("grow_factor_1");
             if (lowPercent > 0) {
                 if (changeGrowFactor >= 1) {
-                    changeGrowFactor = 1 + (changeGrowFactor - 1) * (1 - lowPercent / 100D);
+                    changeGrowFactor = 1 + (changeGrowFactor - 1) * (1 - lowPercent / groupPropertiesService.getPropertyByGroupIdAndCode("grow_factor_1", group.getIdGroup()).getValue());
                 } else {
-                    changeGrowFactor = 1 - (1 - changeGrowFactor) * (1 - lowPercent / 100D);
+                    changeGrowFactor = 1 - (1 - changeGrowFactor) * (1 - lowPercent / groupPropertiesService.getPropertyByGroupIdAndCode("grow_factor_1", group.getIdGroup()).getValue());
                 }
             }
-            Double changeGrowFactor2 = comparePlayers.getGrowFactor2();
+            //Double changeGrowFactor2 = comparePlayers.getGrowFactor2();
+            Double changeGrowFactor2 = comparePlayers.getGrowFactorsMap().get("grow_factor_2");
             if (lowPercent2 > 0) {
                 if (changeGrowFactor2 >= 1) {
-                    changeGrowFactor2 = 1 + (changeGrowFactor2 - 1) * (1 - lowPercent2 / 200D);
+                    changeGrowFactor2 = 1 + (changeGrowFactor2 - 1) * (1 - lowPercent2 / groupPropertiesService.getPropertyByGroupIdAndCode("grow_factor_2", group.getIdGroup()).getValue());
                 } else {
-                    changeGrowFactor2 = 1 - (1 - changeGrowFactor2) * (1 - lowPercent2 / 200D);
+                    changeGrowFactor2 = 1 - (1 - changeGrowFactor2) * (1 - lowPercent2 / groupPropertiesService.getPropertyByGroupIdAndCode("grow_factor_2", group.getIdGroup()).getValue());
                 }
             }
+            // ToDo add min and max factorValues add check if this values present - use them and use default in other cases
             if (changeGrowFactor2 < 0.0001) {
                 changeGrowFactor2 = 0.0001;
             }
             BigDecimal growDB = new BigDecimal(baseGrow * changeGrowFactor*changeGrowFactor2);
             growDB = growDB.setScale(4, RoundingMode.HALF_UP);
-            gameActivityGrowLog.setGrow(growDB.doubleValue());
-            gameActivityGrowLogService.save(gameActivityGrowLog);
+            gameActivityGrowLog.setGrow(growDB.doubleValue() / reduceFactor);
+            roundActivityLog.add(gameActivityGrowLog);
         }
-        GameActivityGrowLog heroGrowLog = new GameActivityGrowLog();
-        heroGrowLog.setIdPlayer(1L);
-        heroGrowLog.setIdGroup(group.getIdGroup());
-        heroGrowLog.setConvertDate(compareDate);
-        heroGrowLog.setGrow(171D);
-        heroGrowLog.setFactor(1D);
-        heroGrowLog.setFactor2(1D);
-        gameActivityGrowLogService.save(heroGrowLog);
+        List <GameActivityGrowLog> highPlayer = roundActivityLog.stream().filter(c -> (c.getGrow() > dbGroup.getMaxHeight())).collect(Collectors.toList());
+        Double templateGrow = highPlayer.stream().sorted(Comparator.comparingDouble(GameActivityGrowLog::getGrow).reversed()).collect(Collectors.toList())
+                .get(dbGroup.getLevelsCount() - 1).getGrow();
+        reduceFactor = templateGrow / dbGroup.getMaxHeight();
+        for (GameActivityGrowLog saveLog: roundActivityLog) {
+            saveLog.setGrow(saveLog.getGrow() / reduceFactor);
+            gameActivityGrowLogService.save(saveLog);
+        }
+        // ToDo зависит от группы
+        if (groupType == 0) {
+            GameActivityGrowLog heroGrowLog = new GameActivityGrowLog();
+            heroGrowLog.setIdPlayer(1L);
+            heroGrowLog.setIdGroup(group.getIdGroup());
+            heroGrowLog.setConvertDate(compareDate);
+            heroGrowLog.setGrow(171D / reduceFactor);
+            heroGrowLog.setFactor(1D);
+            heroGrowLog.setFactor2(1D);
+            gameActivityGrowLogService.save(heroGrowLog);
+        }
+        if (Integer.parseInt(losersCount) > 0) {
+            List<ComparePlayers> losersList = comparePlayersList.stream().sorted(Comparator.comparingDouble(ComparePlayers::getGrowFactor))
+                    .filter(a -> a.getActiveStatus()>0).collect(Collectors.toList()).subList(0, Integer.parseInt(losersCount));
+            for (ComparePlayers lastPlayer: losersList) {
+                PlayersGroups playersGroups = playerGroupService.findByGroupAndPlayerId(group.getIdGroup(), lastPlayer.getIdPlayer());
+                playersGroups.setActiveStatus(0);
+                playerGroupService.save(playersGroups);
+            }
+        }
 
-        ComparePlayers lastPlayer = comparePlayersList.stream().sorted(Comparator.comparingDouble(ComparePlayers::getGrowFactor)).filter(a -> a.getActiveStatus()>0).findFirst().get();
-        PlayersGroups playersGroups = playerGroupService.findByGroupAndPlayerId(group.getIdGroup(), lastPlayer.getIdPlayer());
-        playersGroups.setActiveStatus(0);
-        playerGroupService.save(playersGroups);
         return "catalogues/grow/activity_game";
     }
 
+    // ToDo Check if work object by name. It means groupProperties works as object and I can use it fields
+    @PostMapping("/createGroupProperties")
+    public String createGroupProperties(// @ModelAttribute("groupProperties") GroupProperties groupProperties,
+                                        @ModelAttribute("growGroup") GrowGroup group,
+                                        @RequestParam(value = "startDate", required = false) String startDateString,
+                                        @RequestParam(value = "countOfPeriods") int countOfPeriods,
+                                        @RequestParam(value = "period") int period,
+                                        @RequestParam(value = "countOfLosers") int countOfLosers
+                                        ) {
+        String prefix = "round_date_";
+        List<GroupProperties> savedPeriods = groupPropertiesService
+                .getAllPropertiesByGroupIdAndCodeTemplate(prefix + "%", group.getIdGroup());
+        LocalDate startDate = LocalDate.parse(startDateString);
+        int suffix = 1;
+        if (!savedPeriods.isEmpty()) {
+            GroupProperties lastGroupProperty = savedPeriods.stream().sorted(Comparator.comparing(GroupProperties::getStartDate).reversed())
+                    .collect(Collectors.toList()).get(0);
+            startDate = lastGroupProperty.getStartDate();
+            suffix = Integer.parseInt(lastGroupProperty.getCode().replace(prefix, ""));
 
-    @PostMapping("/UpdateRandomAndBonusesEveryDay")
-    public String updateRandomAndBonusesEveryDay(@ModelAttribute("growGroup") GrowGroup group,
-                                                 @RequestParam(value = "bonusDate", required = false) String bonusDateString,
-                                                 Model model) {
-
-        LocalDate bonusDate = null;
-        if (Objects.nonNull(bonusDateString) && !bonusDateString.isEmpty()) {
-            bonusDate = LocalDate.parse(bonusDateString);
         }
-        runRandomBeforeVirtualCalculation(group, bonusDate); // Check if currentDate.minus(1L)
+        for (int i=1; i<= countOfPeriods; i++) {
+            GroupProperties groupProperties1 = new GroupProperties();
+            groupProperties1.setIdGroup(group.getIdGroup());
+            groupProperties1.setCode(prefix + (suffix + i));
+            groupProperties1.setValue((double)countOfLosers);
+            startDate = startDate.plusDays(period);
+            groupProperties1.setStartDate(startDate);
+            groupPropertiesService.save(groupProperties1);
 
-        return "catalogues/grow/update_grow_group";
+        }
+        return "catalogues/grow/group_properties_setup";
+    }
+
+    private void runRandomBeforeVirtualCalculationGroup5(GrowGroup group, LocalDate bonusDate) {
+        LocalDate monthStartDate = growGroupService.getGrowGroupById(group.getIdGroup()).getStartDate();
+        long days = ChronoUnit.DAYS.between(monthStartDate, bonusDate);
+        calcMaleGroupRandom(bonusDate, group);
+        if (days % 2 == 0) {
+            calcNewGroupRandom(bonusDate, group);
+        }
+        if (days % 3 == 0) {
+            calcNewGroupBonus(bonusDate, group);
+        }
+    }
+
+    private void runRandomForGroupTwoPlayers(GrowGroup group, LocalDate bonusDate) {
+        LocalDate monthStartDate = growGroupService.getGrowGroupById(group.getIdGroup()).getStartDate();
+        long days = ChronoUnit.DAYS.between(monthStartDate, bonusDate);
+        calcNewGroupRandom(bonusDate, group);
+        if (days % 3 == 0) {
+            calcNewGroupBonus(bonusDate, group);
+        }
     }
 
     private void runRandomBeforeVirtualCalculation(GrowGroup group, LocalDate bonusDate) {
@@ -396,6 +477,7 @@ public class GrowGroupsController extends AbstractEntityController {
         updateGeneralRandom(bonusDate, group);
         updateRealPlayersRandom(bonusDate, group);
         oneBigBonus(bonusDate, group, "VeryLowGirl%");
+        updateRealPlayersBigBonus(bonusDate, group);
         // -------------------------- TEST
 
         if (days % 2 == 0) {
@@ -591,6 +673,16 @@ public class GrowGroupsController extends AbstractEntityController {
         List<PlayerRandomChoice> luckyFemales = playerGroupService.findPlayerByGroupAndGenderAndPlayerType(group.getIdGroup(), 0, 2);
         int[][] randomValues = new int[][]{{75, 10, 10, 5}, {1, 2, 3, 4}};
         calculateRoundAndSaveTheResults(luckyFemales, null, randomValues, group, updateDate, 1, true);
+    }
+
+    private void updateRealPlayersBigBonus(LocalDate updateDate, GrowGroup group) {
+        List<PlayerRandomChoice> luckyFemales = playerGroupService.findPlayerByGroupAndGenderAndPlayerType(group.getIdGroup(), 0, 2);
+        int[][] probabilitiesActivity = new int[][]{{100}, {14}};
+        int[][] randomValues = new int[][]{{50, 30, 15, 5}, {1, 2, 3, 4}};
+        int[][] bonusValues = new int[][]{{60, 30, 10}, {1, 2, 3}};
+        calculateRoundAndSaveTheResults(luckyFemales, probabilitiesActivity, randomValues, group, updateDate, 55, true);
+        calculateRoundAndSaveTheResults(luckyFemales, probabilitiesActivity, bonusValues, group, updateDate, 66, false);
+
     }
 
     private void bigBoysProblems(LocalDate updateDate, GrowGroup group) {
@@ -807,7 +899,27 @@ public class GrowGroupsController extends AbstractEntityController {
         calculateRoundAndSaveTheResults(luckyFemales, null, bonusValue, group, updateDate, 11, false);
     }
 
-    //ToDo every 3 days
+    private void calcNewGroupRandom(LocalDate updateDate, GrowGroup group) {
+        List<PlayerRandomChoice> females = playerGroupService.findPlayerByGroupAndGender(group.getIdGroup(), 0);
+        int[][] activitiesCount = new int[][]{{40, 30, 20, 5, 5}, {1, 2, 3, 4, 5}};
+        int[][] randomValue = new int[][]{{80, 20}, {1, 2}};
+        calculateRoundAndSaveTheResults(females, activitiesCount, randomValue, group, updateDate, 1, true);
+    }
+
+    private void calcNewGroupBonus(LocalDate updateDate, GrowGroup group) {
+        List<PlayerRandomChoice> females = playerGroupService.findPlayerByGroupAndGender(group.getIdGroup(), 0);
+        int[][] activitiesCount = new int[][]{{40, 30, 20, 10}, {1, 2, 3, 4}};
+        int[][] randomValue = new int[][]{{90, 10}, {1, 2}};
+        calculateRoundAndSaveTheResults(females, activitiesCount, randomValue, group, updateDate, 1, false);
+    }
+
+    private void calcMaleGroupRandom(LocalDate updateDate, GrowGroup group) {
+        List<PlayerRandomChoice> males = playerGroupService.findPlayerByGroupAndGender(group.getIdGroup(), 1);
+        int[][] activitiesCount = new int[][]{{98, 2}, {1, 2}};
+        int[][] randomValue = new int[][]{{50, 50}, {1, -1}};
+        calculateRoundAndSaveTheResults(males, activitiesCount, randomValue, group, updateDate, 1, true);
+    }
+
     private void calculateFandMRandoms3(LocalDate updateDate, GrowGroup group) {
         List<PlayerRandomChoice> females = playerGroupService.findPlayerByGroupAndGender(group.getIdGroup(), 0);
         List<PlayerRandomChoice> males = playerGroupService.findPlayerByGroupAndGender(group.getIdGroup(), 1);
@@ -842,7 +954,7 @@ public class GrowGroupsController extends AbstractEntityController {
     private void calculateRoundAndSaveTheResults(List<PlayerRandomChoice> playersRandomChoice, int[][] activitiesCount,
                                                  int[][] randomValue, GrowGroup group, LocalDate updateDate, int eventType, boolean isRandom) {
         for (PlayerRandomChoice playerRandomChoice : playersRandomChoice) {
-            List<AutoActivity> playersActivities = autoActivityService.getAllAutoActivitiesByPlayerId(playerRandomChoice.getIdPlayer());
+            List<AutoActivity> playersActivities = autoActivityService.getAllAutoActivitiesByPlayerId(playerRandomChoice.getIdPlayer(), group.getIdGroup());
             int aCount = Objects.nonNull(activitiesCount) ? RandomUtils.getProbabilityForGroup(activitiesCount) : 1;
             Collections.shuffle(playersActivities);
             List<AutoActivity> randomActivities = playersActivities.subList(0, aCount);
@@ -885,5 +997,7 @@ public class GrowGroupsController extends AbstractEntityController {
         }
         gameActivityEventsLogService.save(gameActivityEventsLog);
     }
+
+
 
 }

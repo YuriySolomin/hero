@@ -12,10 +12,12 @@ public interface IGameActivityLogService {
 
     List<GameActivityStatistics> getGameActivityStatistics(LocalDate endDate);
 
-    List<GameActivityStatistics> getGameActivityStatistics(LocalDate endDate, Long idPlayer);
+    List<GameActivityStatistics> getGameActivityStatistics(LocalDate endDate, Long idPlayer, Long idGroup);
 
     List<GameActivityStatistics> getGameActivityStatisticsByActivity(LocalDate endDate, Long idActivity);
 
     List<GameActivityStatistics> getGameActivityStatistics(Long groupId);
+
+    LocalDate getMaxDateGameActivityLogForGroup(Long groupId);
 
 }

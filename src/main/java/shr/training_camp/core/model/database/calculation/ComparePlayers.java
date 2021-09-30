@@ -22,5 +22,6 @@ public class ComparePlayers {
     private Long idActivity;
     private Map<Long, Double> playerValues;
     private int activeStatus;
+    private Map<String, Double> growFactorsMap;
 
 }

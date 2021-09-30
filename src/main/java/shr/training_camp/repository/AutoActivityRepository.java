@@ -17,6 +17,11 @@ public interface AutoActivityRepository extends JpaRepository<AutoActivity, Long
     @Query(value = "select * from tc_auto_activities where id_player = :playerId", nativeQuery = true)
     List<AutoActivity> findAllPlayerAutoActivities(@Param("playerId") Long playerId);
 
+    @Query(value = "select * from tc_auto_activities " +
+            "where id_player = :playerId " +
+            "and id_group = :groupId", nativeQuery = true)
+    List<AutoActivity> findAllPlayerAutoActivities(@Param("playerId") Long playerId, @Param("groupId") Long groupId);
+
     /*@Query("select aa.* from tc_auto_activities aa where join tc_players p on aa.id_player = p.id_player " +
             "join tc_players_groups pg on p.id_player = pg.id_player " +
             "where id_group = :groupId")
@@ -25,7 +30,8 @@ public interface AutoActivityRepository extends JpaRepository<AutoActivity, Long
     @Query(value = "select aa.* from tc_auto_activities aa join tc_players p on aa.id_player = p.id_player " +
             "join tc_players_groups pg on p.id_player = pg.id_player " +
             "where pg.id_group = :groupId " +
-            "and aa.id_activity = :activityId", nativeQuery = true)
+            "and aa.id_activity = :activityId " +
+            "and aa.id_group = :groupId", nativeQuery = true)
     Page<AutoActivity> findAllPlayerAutoActivitiesByGroupAndActivity(Pageable pageable, @Param("groupId") Long groupId, @Param("activityId") Long activityId);
 
     @Query(value = "select * from tc_auto_activities " +
@@ -39,6 +45,7 @@ public interface AutoActivityRepository extends JpaRepository<AutoActivity, Long
             "and p.id_player = aa.id_player " +
             "and a.id_activity = aa.id_activity", nativeQuery = true)
     List<Activity> getActivitiesArePresentInTheAA(@Param("playerId") Long playerId);
+
 
 
 

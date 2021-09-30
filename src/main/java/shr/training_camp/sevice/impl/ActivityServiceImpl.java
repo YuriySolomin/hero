@@ -49,4 +49,9 @@ public class ActivityServiceImpl extends AbstractEntityServiceImpl implements IA
     public List<Activity> findActivitiesByType(Integer activityType) {
         return activityRepository.findActivitiesByType(activityType);
     }
+
+    @Override
+    public List<Activity> getActivitiesByActivityFilter(int activityFilter) {
+        return activityRepository.getActivitiesByActivityFilter(activityFilter);
+    }
 }

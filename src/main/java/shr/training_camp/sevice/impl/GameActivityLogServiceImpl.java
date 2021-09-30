@@ -28,8 +28,8 @@ public class GameActivityLogServiceImpl implements IGameActivityLogService {
     }
 
     @Override
-    public List<GameActivityStatistics> getGameActivityStatistics(LocalDate endDate, Long idPlayer) {
-        return gameActivityLogRepository.getGameActivityStatistics(Date.valueOf(endDate), idPlayer);
+    public List<GameActivityStatistics> getGameActivityStatistics(LocalDate endDate, Long idPlayer, Long idGroup) {
+        return gameActivityLogRepository.getGameActivityStatistics(Date.valueOf(endDate), idPlayer, idGroup);
     }
 
     @Override
@@ -40,5 +40,10 @@ public class GameActivityLogServiceImpl implements IGameActivityLogService {
     @Override
     public List<GameActivityStatistics> getGameActivityStatistics(Long groupId) {
         return gameActivityLogRepository.getGameActivityStatisticsByActivity(groupId);
+    }
+
+    @Override
+    public LocalDate getMaxDateGameActivityLogForGroup(Long groupId) {
+        return gameActivityLogRepository.getMaxDateGameActivityLogForGroup(groupId);
     }
 }

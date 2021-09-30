@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Start search</title>
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+
+</head>
+<body>
+<h1>Add random players into the grow group</h1>
+<hr>
+<form action="#" th:action="@{/generateBot}" th:object = "${player}" method="POST">
+  <div>
+    ID group:&nbsp;<input type="text" id="idGroupBot" name="idGroupBot">
+  </div>
+  <div>
+    ID bot:&nbsp;<input type="text" id="idBot" name="idBot">
+  </div>
+  <div>
+    Start Date:&nbsp;<input type="date" th:value="${defaultDate}" id="startDateBot" name="startDateBot" placeholder="startDateBot" class="form-control mb-4 col-4">
+  </div>
+  <button type="submit" class="btn btn-info col-2"> Add bot to the group </button>
+
+</form>
+
+<form action="#" th:action="@{/generateNewPlayers}" th:object = "${player}" method="POST">
+  <div>
+    ID group:&nbsp;<input type="text" id="idGroupP" name="idGroupP">
+  </div>
+  <div>
+    Count of new players:&nbsp;<input type="text" id="countP" name="countP">
+  </div>
+  <div>
+    Gender of new players:&nbsp;<input type="text" id="genderP" name="genderP">
+  </div>
+  <div>
+    Prefix of new players:&nbsp;<input type="text" id="prefixP" name="prefixP">
+  </div>
+  <button type="submit" class="btn btn-info col-2"> Generate crowd of players </button>
+</form>
+
+<form action="#" th:action="@{/generatePlayersActivities}" th:object = "${player}" method="POST">
+  <div>
+    ID bot:&nbsp;<input type="text" id="idBotPA" name="idBotPA">
+  </div>
+  <div>
+    ID group:&nbsp;<input type="text" id="idGroupPA" name="idGroupPA">
+  </div>
+  <div>
+    Start Date:&nbsp;<input type="date" th:value="${defaultDate}" id="startDatePA" name="startDatePA" placeholder="startDateBot" class="form-control mb-4 col-4">
+  </div>
+  <div>
+    Gender of players:&nbsp;<input type="text" id="genderPA" name="genderPA">
+  </div>
+
+  <button type="submit" class="btn btn-info col-2"> Generate Players Activities </button>
+</form>
+
+<form action="#" th:action="@{/addPlayersIntoTheGroups}" th:object = "${player}" method="POST">
+  <div>
+    ID bot:&nbsp;<input type="text" id="idBotPG" name="idBotPG">
+  </div>
+  <div>
+    ID group:&nbsp;<input type="text" id="idGroupPG" name="idGroupPG">
+  </div>
+  <div>
+    Start Date:&nbsp;<input type="date" th:value="${defaultDate}" id="startDatePG" name="startDatePG" placeholder="startDateBot" class="form-control mb-4 col-4">
+  </div>
+
+  <button type="submit" class="btn btn-info col-2"> Add all players into the selected group </button>
+</form>
+
+</body>
+</html>

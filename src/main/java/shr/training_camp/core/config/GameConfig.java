@@ -11,6 +11,8 @@ import org.springframework.context.annotation.PropertySource;
 import shr.training_camp.core.config.factory.YamlPropertySourceFactory;
 import shr.training_camp.core.model.config.Game;
 
+import java.util.List;
+
 @Configuration
 @EnableConfigurationProperties
 @PropertySource(
@@ -24,5 +26,6 @@ public class GameConfig {
     private String testValues;
     private String resourcePlayers;
     private String resourcePlayersActivities;
+    private String resourceBotActivities;
 
 }

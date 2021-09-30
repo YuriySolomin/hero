@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Setup group property (run only) </title>
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+
+</head>
+<body>
+<h2> The properies for run group automatically (only virtual players) </h2>
+<form action="#" th:action="@{/createGroupProperties}" th:object = "${growGroup}" method="POST">
+  <!--
+  <div>
+    <select class="form-control" th:field="*{growGroup.id_group}">
+      <option th:each="grow_groups : ${growGroup}" th:value="${growGroup.id_group}" th:text="${growGroup.name}"></option>
+    </select>
+  </div>
+  -->
+  <div>
+    Start Date:
+    <input type="date" th:value="${defaultDate}" id="startDate" name="startDate" placeholder="startDate" class="form-control mb-4 col-4">
+  </div>
+  <input type="hidden" th:field="*{idGroup}">
+  <input type="text" id="countOfPeriods" name="countOfPeriods">
+  <input type="text" id="period" name="period">
+  <input type="text" id="countOfLosers" name="countOfLosers">
+  <button type="submit" class="btn btn-info col-2"> Create periods</button>
+
+</form>
+
+</body>
+</html>
