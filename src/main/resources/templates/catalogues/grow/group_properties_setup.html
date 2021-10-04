@@ -31,5 +31,16 @@
 
 </form>
 
+
+<form action="#" th:action="@{/generateCharacters}" th:object = "${growGroup}" method="POST">
+
+  <input type="hidden" th:field="*{idGroup}">
+  Gender: <input type="text" id="gender" name="gender">
+
+
+  <button type="submit" class="btn btn-info col-2"> Generate characters</button>
+  <!-- Пока хард код -->
+</form>
+
 </body>
 </html>

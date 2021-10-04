@@ -316,6 +316,21 @@ public class AutoActivitiesCalculation {
         for (Map.Entry<Long, Double> map: heroPlayer.getActivityValues().entrySet()) {
             HeroActivityPlaces heroActivityPlaces = new HeroActivityPlaces();
             long place = virtualPlayers.stream().filter(c -> c.getActivityValues().get(map.getKey()) > map.getValue()).count() + 1;
+            List<ComparePlayers> sortedPlayers = allPlayers.stream()
+                    .sorted(Comparator.comparingDouble((ToDoubleFunction<ComparePlayers>) c -> c.getActivityValues().get(map.getKey()))
+                            .reversed()).collect(Collectors.toList());heroActivityPlaces.setLowerPlace(sortedPlayers.get((int)place).getActivityValues().get(map.getKey()));
+            if (place < sortedPlayers.size()) {
+                heroActivityPlaces.setLowerPlace(sortedPlayers.get((int)place).getActivityValues().get(map.getKey()));
+            } else {
+                heroActivityPlaces.setLowerPlace(0D);
+            }
+
+            if (place != 1) {
+                heroActivityPlaces.setUpperPlace(sortedPlayers.get((int)(place-2)).getActivityValues().get(map.getKey()));
+            } else {
+                heroActivityPlaces.setUpperPlace(0D);
+            }
+            heroActivityPlaces.setFirstPlace(sortedPlayers.get(0).getActivityValues().get(map.getKey()));
             heroActivityPlaces.setIdActivity(map.getKey());
             heroActivityPlaces.setActivity(activityService.getActivityById(map.getKey()));
             heroActivityPlaces.setPlace(place);

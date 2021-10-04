@@ -46,16 +46,18 @@
       <th> Average </th>
       <th> Factor </th>
       <th> Place </th>
+      <th> First Place </th>
       <th> Tempo </th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="compare_player : ${compareList}">
       <td th:text="${compare_player.activity.name}">
-      <td th:text="${compare_player.heroValue}"></td>
+      <td th:text="${compare_player.textPlacesValue}"></td>
       <td th:text="${compare_player.average}"></td>
       <td th:text="${compare_player.factor}"></td>
       <td th:text="${compare_player.place}"></td>
+      <td th:text="${compare_player.firstPlace}"></td>
       <td th:text="${compare_player.threeDaysRecommendation}"></td>
 
 

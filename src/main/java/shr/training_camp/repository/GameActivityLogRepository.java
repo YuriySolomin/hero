@@ -54,4 +54,16 @@ public interface GameActivityLogRepository extends JpaRepository<GameActivityLog
             "where gal.id_group = :groupId", nativeQuery = true)
     LocalDate getMaxDateGameActivityLogForGroup(@Param("groupId") Long groupId);
 
+    @Query(value = "select aa.id_activity as idActivity, aa.id_player as idPlayer, aa.a_first as aFirst, " +
+            "aa.ratio as ratio, sum(gal.value) as value, sum(gal.random_value) as randomVale, " +
+            "sum(gal.bonus_value) as bonusValue " +
+            "from tc_auto_activities aa join tc_game_activity_log gal on aa.id_activity = gal.id_activity  " +
+            "and aa.id_group = gal.id_group " +
+            "and aa.id_player = gal.id_player " +
+            "where aa.id_group = :groupId " +
+            "and aa.id_player = :playerId " +
+            "group by 1, 2, 3, 4", nativeQuery = true)
+    List<GameActivityStatistics> getGameActivityStatisticsByGroupAndPlayer(@Param("groupId") Long groupId,
+                                                                           @Param("playerId") Long playerId);
+
 }

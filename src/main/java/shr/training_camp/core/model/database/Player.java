@@ -27,14 +27,19 @@ public class Player {
     private int gender;
     @Column(name = "player_type")
     private int playerType;
+    @Column(name = "description")
+    private String description;
 
-    public Player(String nickName, String firstName, String lastName, String secretName, int gender, int playerType) {
+
+    public Player(String nickName, String firstName, String lastName, String secretName, int gender, int playerType,
+                  String description) {
         this.nickName = nickName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.secretName = secretName;
         this.gender = gender;
         this.playerType = playerType;
+        this.description = description;
     }
 
 }

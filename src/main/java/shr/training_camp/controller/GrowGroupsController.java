@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import shr.training_camp.core.model.database.*;
 import shr.training_camp.core.model.database.addition.GameActivityStatistics;
 import shr.training_camp.core.model.database.addition.PlayerRandomChoice;
+import shr.training_camp.core.model.database.addition.PlayersForGeneration;
 import shr.training_camp.core.model.database.calculation.AutoActivitiesCalculation;
 import shr.training_camp.core.model.database.calculation.ComparePlayers;
 import shr.training_camp.core.model.database.calculation.HeroActivityPlaces;
@@ -58,6 +59,9 @@ public class GrowGroupsController extends AbstractEntityController {
 
     @Autowired
     private IGroupPropertiesService groupPropertiesService;
+
+    @Autowired
+    private PlayerService playerService;
 
     @GetMapping("/listOfGrowGroups")
     public String showListOfTheQuests(Model model) {
@@ -180,13 +184,15 @@ public class GrowGroupsController extends AbstractEntityController {
         for (HeroActivityPlaces heroActivityPlaces: playersGroupsList) {
             long deltaPlace = heroActivityPlaces.getPlace() / 10 ;
             if (deltaPlace < 1) {
-
                 deltaPlace = 1;
             }
             long newPlace = (heroActivityPlaces.getPlace() - deltaPlace) > 1 ? heroActivityPlaces.getPlace() - deltaPlace : 1;
+
             double recommendationValues = autoActivitiesCalculation.getFewRecommendations(id, allPlayers, filterDate, (int)newPlace, 3)
                     .stream().filter(rec -> rec.getIdActivity().equals(heroActivityPlaces.getIdActivity())).findFirst().get().getRecommendation();
             heroActivityPlaces.setThreeDaysRecommendation(recommendationValues);
+            heroActivityPlaces.setTextPlacesValue("( " + heroActivityPlaces.getLowerPlace() + " ) " +
+                    heroActivityPlaces.getHeroValue() + " ( " + heroActivityPlaces.getUpperPlace() + " )");
         }
         GrowGroup group = growGroupService.getGrowGroupById(id);
         model.addAttribute("growGroup", group);
@@ -385,9 +391,11 @@ public class GrowGroupsController extends AbstractEntityController {
             roundActivityLog.add(gameActivityGrowLog);
         }
         List <GameActivityGrowLog> highPlayer = roundActivityLog.stream().filter(c -> (c.getGrow() > dbGroup.getMaxHeight())).collect(Collectors.toList());
-        Double templateGrow = highPlayer.stream().sorted(Comparator.comparingDouble(GameActivityGrowLog::getGrow).reversed()).collect(Collectors.toList())
-                .get(dbGroup.getLevelsCount() - 1).getGrow();
-        reduceFactor = templateGrow / dbGroup.getMaxHeight();
+        if (!highPlayer.isEmpty()) {
+            Double templateGrow = highPlayer.stream().sorted(Comparator.comparingDouble(GameActivityGrowLog::getGrow).reversed()).collect(Collectors.toList())
+                    .get(dbGroup.getLevelsCount() - 1).getGrow();
+            reduceFactor = templateGrow / dbGroup.getMaxHeight();
+        }
         for (GameActivityGrowLog saveLog: roundActivityLog) {
             saveLog.setGrow(saveLog.getGrow() / reduceFactor);
             gameActivityGrowLogService.save(saveLog);
@@ -447,6 +455,39 @@ public class GrowGroupsController extends AbstractEntityController {
             groupPropertiesService.save(groupProperties1);
 
         }
+        return "catalogues/grow/group_properties_setup";
+    }
+
+    // ToDo change some hard codes
+    @PostMapping("/generateCharacters")
+    public String generateCharacters(@ModelAttribute("growGroup") GrowGroup group,
+                                     @RequestParam(value = "gender") int gender) {
+
+        List<PlayersForGeneration> groupPlayers = playerGroupService.getPlayersFromGroupByGenderWithoutHero(group.getIdGroup(), gender);
+        for (PlayersForGeneration playersForGeneration : groupPlayers) {
+            String description = Objects.nonNull(playersForGeneration.getDescription()) ? playersForGeneration.getDescription() : "";
+            int valueAG = RandomUtils.getRandom(100) + 1;
+            int severity = RandomUtils.getRandom(50) + 1;
+            if (valueAG % 10 == 0) {
+                description += "AG - yes, ";
+            } else {
+                int valuePG = RandomUtils.getRandom(105) + 1;
+                if (valuePG % 21 == 0) {
+                    description += "PG - yes, ";
+                }
+            }
+            description += " Severity = " + severity + ", ";
+            int gameWithTiny = RandomUtils.getRandom(100) + 11;
+            if (gameWithTiny % 4 == 0) {
+                description += "PTiny - yes, ";
+
+            }
+            Player player = playerService.getPlayerById(playersForGeneration.getIdPlayer());
+            player.setDescription(description);
+            playerService.savePlayer(player);
+        }
+
+
         return "catalogues/grow/group_properties_setup";
     }
 

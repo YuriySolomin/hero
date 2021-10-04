@@ -9,6 +9,7 @@ import shr.training_camp.core.model.database.Player;
 import shr.training_camp.core.model.database.PlayersGroups;
 import shr.training_camp.core.model.database.addition.AutoActivitiesPlayerGroups;
 import shr.training_camp.core.model.database.addition.PlayerRandomChoice;
+import shr.training_camp.core.model.database.addition.PlayersForGeneration;
 
 import java.util.List;
 
@@ -75,6 +76,15 @@ public interface PlayersGroupsRepository extends JpaRepository<PlayersGroups, Lo
             "and aac.id_activity = :activityId " +
             "order by firstElement desc", nativeQuery = true)
     List<AutoActivitiesPlayerGroups> findAutoActivitiesForPlayerGroups(@Param("groupId") Long groupId, @Param("activityId") Long activityId);
+
+    @Query(value = "select p.id_player as idPlayer, p.nick_name as nickName, p.first_name as firstName, " +
+            "p.last_name as lastName, p.secret_name as secretName, p.gender, p.player_type as playerType, " +
+            "p.age, p.code, p.description, p.is_free as isFree " +
+            "from tc_players p join tc_players_groups pg on pg.id_player = p.id_player " +
+            "where pg.id_group = :groupId " +
+            "and p.gender = :gender " +
+            "and pg.is_hero = 0", nativeQuery = true)
+    List<PlayersForGeneration> getPlayersFromGroupByGenderWithoutHero(@Param("groupId") Long groupId, @Param("gender") int gender);
 
 
 }

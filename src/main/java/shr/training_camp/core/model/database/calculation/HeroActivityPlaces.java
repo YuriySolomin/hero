@@ -18,5 +18,10 @@ public class HeroActivityPlaces {
     private Double factor;
     private long place;
     private Double threeDaysRecommendation;
+    private Double upperPlace;
+    private Double lowerPlace;
+    private Double firstPlace;
+    private String textPlacesValue;
+
 
 }

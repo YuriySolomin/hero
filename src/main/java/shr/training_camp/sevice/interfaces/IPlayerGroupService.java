@@ -2,11 +2,13 @@ package shr.training_camp.sevice.interfaces;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import shr.training_camp.core.model.database.GrowGroup;
 import shr.training_camp.core.model.database.Player;
 import shr.training_camp.core.model.database.PlayersGroups;
 import shr.training_camp.core.model.database.addition.AutoActivitiesPlayerGroups;
 import shr.training_camp.core.model.database.addition.PlayerRandomChoice;
+import shr.training_camp.core.model.database.addition.PlayersForGeneration;
 
 import java.util.List;
 
@@ -35,5 +37,7 @@ public interface IPlayerGroupService<T> extends AbstractEntityService<T> {
     List<AutoActivitiesPlayerGroups> findAutoActivitiesForPlayerGroups(Long groupId);
 
     List<AutoActivitiesPlayerGroups> findAutoActivitiesForPlayerGroups(Long groupId, Long activityId);
+
+    List<PlayersForGeneration> getPlayersFromGroupByGenderWithoutHero(Long groupId, int gender);
 
 }

@@ -8,6 +8,7 @@ import shr.training_camp.core.model.database.Player;
 import shr.training_camp.core.model.database.PlayersGroups;
 import shr.training_camp.core.model.database.addition.AutoActivitiesPlayerGroups;
 import shr.training_camp.core.model.database.addition.PlayerRandomChoice;
+import shr.training_camp.core.model.database.addition.PlayersForGeneration;
 import shr.training_camp.repository.PlayersGroupsRepository;
 import shr.training_camp.sevice.interfaces.IPlayerGroupService;
 
@@ -92,7 +93,12 @@ public class PlayerGroupServiceImpl extends AbstractEntityServiceImpl implements
     public List<AutoActivitiesPlayerGroups> findAutoActivitiesForPlayerGroups(Long groupId, Long activityId) {
         return playersGroupsRepository.findAutoActivitiesForPlayerGroups(groupId, activityId);
     }
-/*
+
+    @Override
+    public List<PlayersForGeneration> getPlayersFromGroupByGenderWithoutHero(Long groupId, int gender) {
+        return playersGroupsRepository.getPlayersFromGroupByGenderWithoutHero(groupId, gender);
+    }
+    /*
     *
         @Override
     public Player getPlayerById(long id) {

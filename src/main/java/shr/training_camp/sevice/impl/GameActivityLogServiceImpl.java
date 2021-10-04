@@ -46,4 +46,9 @@ public class GameActivityLogServiceImpl implements IGameActivityLogService {
     public LocalDate getMaxDateGameActivityLogForGroup(Long groupId) {
         return gameActivityLogRepository.getMaxDateGameActivityLogForGroup(groupId);
     }
+
+    @Override
+    public List<GameActivityStatistics> getGameActivityStatisticsByGroupAndPlayer(Long idGroup, Long idPlayer) {
+        return gameActivityLogRepository.getGameActivityStatisticsByGroupAndPlayer(idGroup, idPlayer);
+    }
 }

@@ -11,5 +11,7 @@ public interface GameActivityStatistics {
     Double getRandomValue();
     String getActivityName();
     String getNickName();
+    Double getAFirst();
+    Double getRatio();
 
 }

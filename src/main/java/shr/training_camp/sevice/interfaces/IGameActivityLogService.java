@@ -20,4 +20,6 @@ public interface IGameActivityLogService {
 
     LocalDate getMaxDateGameActivityLogForGroup(Long groupId);
 
+    List<GameActivityStatistics> getGameActivityStatisticsByGroupAndPlayer(Long idGroup, Long idPlayer);
+
 }

@@ -28,18 +28,25 @@ public class GrowGroup {
     private Integer levelsCount;
     @Column(name = "max_height")
     private Double maxHeight;
+    @Column(name = "min_height")
+    private Double minHeight;
     @Column(name = "end_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
+    @Column(name = "fail_out_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate failOutDate;
 
 
     public GrowGroup(final String name, final LocalDate startDate, final Integer groupType, final Integer levelsCount,
-                     final Double maxHeight, final LocalDate endDate) {
+                     final Double maxHeight, final Double minHeight, final LocalDate endDate, final LocalDate failOutDate) {
         this.name = name;
         this.startDate = startDate;
         this.groupType = groupType;
         this.levelsCount = levelsCount;
         this.maxHeight = maxHeight;
         this.endDate = endDate;
+        this.minHeight = minHeight;
+        this.failOutDate = failOutDate;
     }
 }
