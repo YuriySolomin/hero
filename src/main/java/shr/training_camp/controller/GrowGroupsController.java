@@ -180,7 +180,10 @@ public class GrowGroupsController extends AbstractEntityController {
         LocalDate filterDate = LocalDate.now();
         List<HeroActivityPlaces> playersGroupsList = autoActivitiesCalculation.getHeroActivityPlaces(id, filterDate);
         List<ComparePlayers> allPlayers = autoActivitiesCalculation.createComparePlayersList(id, filterDate);
-        List<Recommendations> defaultRecommendations = autoActivitiesCalculation.getFewRecommendations(id, allPlayers, filterDate, 10, 15);
+        List<Recommendations> defaultRecommendations = new ArrayList<>();
+        if (allPlayers.size() > 10) {
+            defaultRecommendations = autoActivitiesCalculation.getFewRecommendations(id, allPlayers, filterDate, 10, 15);
+        }
         for (HeroActivityPlaces heroActivityPlaces: playersGroupsList) {
             long deltaPlace = heroActivityPlaces.getPlace() / 10 ;
             if (deltaPlace < 1) {

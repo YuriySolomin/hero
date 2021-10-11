@@ -313,33 +313,37 @@ public class AutoActivitiesCalculation {
         ComparePlayers heroPlayer = allPlayers.stream().filter(ComparePlayers::isHero).findFirst().get();
         List<ComparePlayers> virtualPlayers = allPlayers.stream().filter(c -> !c.isHero()).collect(Collectors.toList());
         List<HeroActivityPlaces> result = new ArrayList<>();
-        for (Map.Entry<Long, Double> map: heroPlayer.getActivityValues().entrySet()) {
+        List<GroupActivities> groupActivities = groupActivitiesService.getActivitiesInTheGroup(idGroup);
+        Map<Long, Double> map = heroPlayer.getActivityValues();
+        //for (Map.Entry<Long, Double> map: heroPlayer.getActivityValues().entrySet()) {
+        for (GroupActivities groupActivity: groupActivities) {
             HeroActivityPlaces heroActivityPlaces = new HeroActivityPlaces();
-            long place = virtualPlayers.stream().filter(c -> c.getActivityValues().get(map.getKey()) > map.getValue()).count() + 1;
+
+            long place = virtualPlayers.stream().filter(c -> c.getActivityValues().get(groupActivity.getIdActivity()) > map.get(groupActivity.getIdActivity())).count() + 1;
             List<ComparePlayers> sortedPlayers = allPlayers.stream()
-                    .sorted(Comparator.comparingDouble((ToDoubleFunction<ComparePlayers>) c -> c.getActivityValues().get(map.getKey()))
-                            .reversed()).collect(Collectors.toList());heroActivityPlaces.setLowerPlace(sortedPlayers.get((int)place).getActivityValues().get(map.getKey()));
+                    .sorted(Comparator.comparingDouble((ToDoubleFunction<ComparePlayers>) c -> c.getActivityValues().get(groupActivity.getIdActivity()))
+                            .reversed()).collect(Collectors.toList());
             if (place < sortedPlayers.size()) {
-                heroActivityPlaces.setLowerPlace(sortedPlayers.get((int)place).getActivityValues().get(map.getKey()));
+                heroActivityPlaces.setLowerPlace(sortedPlayers.get((int)place).getActivityValues().get(groupActivity.getIdActivity()));
             } else {
                 heroActivityPlaces.setLowerPlace(0D);
             }
 
             if (place != 1) {
-                heroActivityPlaces.setUpperPlace(sortedPlayers.get((int)(place-2)).getActivityValues().get(map.getKey()));
+                heroActivityPlaces.setUpperPlace(sortedPlayers.get((int)(place-2)).getActivityValues().get(groupActivity.getIdActivity()));
             } else {
                 heroActivityPlaces.setUpperPlace(0D);
             }
-            heroActivityPlaces.setFirstPlace(sortedPlayers.get(0).getActivityValues().get(map.getKey()));
-            heroActivityPlaces.setIdActivity(map.getKey());
-            heroActivityPlaces.setActivity(activityService.getActivityById(map.getKey()));
+            heroActivityPlaces.setFirstPlace(sortedPlayers.get(0).getActivityValues().get(groupActivity.getIdActivity()));
+            heroActivityPlaces.setIdActivity(groupActivity.getIdActivity());
+            heroActivityPlaces.setActivity(activityService.getActivityById(groupActivity.getIdActivity()));
             heroActivityPlaces.setPlace(place);
             heroActivityPlaces.setCompareDate(convertDate);
-            double sum = virtualPlayers.stream().mapToDouble(c -> c.getActivityValues().get(map.getKey())).sum();
+            double sum = virtualPlayers.stream().mapToDouble(c -> c.getActivityValues().get(groupActivity.getIdActivity())).sum();
             double average = sum / virtualPlayers.size();
             heroActivityPlaces.setAverage(average);
-            heroActivityPlaces.setHeroValue(map.getValue());
-            heroActivityPlaces.setFactor(map.getValue() / average);
+            heroActivityPlaces.setHeroValue(map.get(groupActivity.getIdActivity()));
+            heroActivityPlaces.setFactor(map.get(groupActivity.getIdActivity()) / average);
             result.add(heroActivityPlaces);
         }
         return result;
